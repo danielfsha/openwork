@@ -4,6 +4,7 @@ import Script from "next/script";
 import { BotIdClient } from "botid/client";
 import { WebMcpProvider } from "../components/webmcp-provider";
 import { StructuredData } from "../components/structured-data";
+import { cn } from "@/lib/utils";
 
 const organizationSchema = {
   "@context": "https://schema.org",
@@ -15,11 +16,6 @@ const organizationSchema = {
   sameAs: ["https://github.com/different-ai/openwork"]
 };
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap"
-});
 
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
@@ -62,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
+    <html lang="en" className={cn(jetbrains.variable, "font-sans")}>
       <head>
         <StructuredData data={organizationSchema} />
         <BotIdClient protect={protectedRoutes} />

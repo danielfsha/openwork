@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Download, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { OpenWorkMark } from "./openwork-mark";
+import { AnimatePresence, motion } from "framer-motion";
 
 type Props = {
   stars: string;
@@ -36,7 +37,7 @@ export function SiteNav(props: Props) {
     { href: "/pricing", label: "Pricing", key: "pricing" },
     { href: "/download", label: "Desktop", key: "download" },
     { href: "https://app.openworklabs.com", label: "Cloud", key: "cloud" },
-    { href: "/enterprise", label: "Enterprise", key: "enterprise" }
+    { href: "/enterprise", label: "Enterprise", key: "enterprise" },
   ] as const;
 
   const opensInNewTab = (item: (typeof navItems)[number]) =>
@@ -48,9 +49,11 @@ export function SiteNav(props: Props) {
       : "text-gray-600 transition-colors hover:text-[#011627]";
 
   return (
-    <header className={`sticky top-0 z-20 w-full transition-all duration-300 ${scrolled ? "bg-white/80 shadow-sm backdrop-blur-md" : ""}`}>
+    <header
+      className={`sticky top-0 z-20 w-full transition-all duration-300 ${scrolled ? "bg-white/80 shadow-sm backdrop-blur-md" : ""}`}
+    >
       <div className="mx-auto flex max-w-5xl flex-col px-6 md:px-8">
-        <div className="grid grid-cols-[auto_1fr_auto] items-center py-4">
+        <div className="flex items-center justify-between py-4">
           <Link
             href="/"
             className="group inline-flex items-center gap-1.5"
@@ -63,11 +66,13 @@ export function SiteNav(props: Props) {
           </Link>
 
           <nav className="hidden items-center justify-center gap-8 text-[15px] font-medium md:flex">
-            {navItems.map(item => (
+            {navItems.map((item) => (
               <Link
                 key={item.key}
                 href={item.href}
-                {...(opensInNewTab(item) ? { target: "_blank", rel: "noreferrer" } : {})}
+                {...(opensInNewTab(item)
+                  ? { target: "_blank", rel: "noreferrer" }
+                  : {})}
                 className={navLink(props.active === item.key)}
               >
                 {item.label}
@@ -99,30 +104,47 @@ export function SiteNav(props: Props) {
             >
               Desktop <Download size={16} />
             </Link>
-            <button
-              type="button"
-              className="rounded-full p-2 text-[#011627] transition-colors hover:bg-white/70 md:hidden"
-              onClick={() => setMobileOpen(current => !current)}
-              aria-expanded={mobileOpen}
-              aria-label={
-                mobileOpen ? "Close navigation menu" : "Open navigation menu"
-              }
-            >
-              {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.button
+                className="rounded-full p-2 text-[#011627] md:hidden"
+                onClick={() => setMobileOpen((current) => !current)}
+                aria-expanded={mobileOpen}
+                aria-label={
+                  mobileOpen ? "Close navigation menu" : "Open navigation menu"
+                }
+                key={mobileOpen ? "close" : "menu"}
+                initial={{ scale: 0, opacity: 0, filter: "blur(4px)" }}
+                animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
+                exit={{ scale: 0, opacity: 0, filter: "blur(4px)" }}
+                transition={{
+                  type: "spring",
+                  damping: 20,
+                  stiffness: 400,
+                  mass: 0.5,
+                }}
+              >
+                {mobileOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </motion.button>
+            </AnimatePresence>{" "}
           </div>
         </div>
 
         {mobileOpen ? (
           <div className="landing-shell mb-8 rounded-xl p-4 md:hidden">
             <div className="flex flex-col gap-1 text-[15px] font-medium text-gray-700">
-              {navItems.map(item => (
+              {navItems.map((item) => (
                 <Link
                   key={item.key}
                   href={item.href}
-                  {...(opensInNewTab(item) ? { target: "_blank", rel: "noreferrer" } : {})}
+                  {...(opensInNewTab(item)
+                    ? { target: "_blank", rel: "noreferrer" }
+                    : {})}
                   className={`rounded-2xl px-4 py-3 ${navLink(
-                    props.active === item.key
+                    props.active === item.key,
                   )}`}
                   onClick={() => setMobileOpen(false)}
                 >
