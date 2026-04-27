@@ -58,7 +58,7 @@
     @apply bg-[#fff2f0] text-foreground;
   }
 
-  body.dark {
-    @apply bg-[#080808] text-foreground;
+  .dark body {
+    @apply bg-[#111111] text-foreground;
   }
 }

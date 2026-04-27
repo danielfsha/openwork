@@ -1,27 +1,21 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
+
+import { useRelativeIndicatorRect } from "./use-relative-indicator-rect";
 
 export function useNavHoverIndicator() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const [hoverRect, setHoverRect] = useState({ left: 0, width: 0 });
-  const navContainerRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<Map<string, HTMLElement>>(new Map());
-
-  const updateHoverRect = (key: string) => {
-    const el = itemRefs.current.get(key);
-    const container = navContainerRef.current;
-    if (el && container) {
-      const elRect = el.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-      setHoverRect({
-        left: elRect.left - containerRect.left,
-        width: elRect.width,
-      });
-    }
-  };
+  const {
+    activeRect: hoverRect,
+    containerRef: navContainerRef,
+    itemRefs,
+    measureActiveRect,
+  } = useRelativeIndicatorRect<string, HTMLDivElement, HTMLElement>({
+    activeKey: hoveredItem,
+  });
 
   const handleMouseEnter = (key: string) => {
     setHoveredItem(key);
-    updateHoverRect(key);
+    measureActiveRect(key);
   };
 
   const handleMouseLeave = () => {

@@ -5,6 +5,7 @@ import { BotIdClient } from "botid/client";
 import { WebMcpProvider } from "../components/webmcp-provider";
 import { StructuredData } from "../components/structured-data";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const organizationSchema = {
   "@context": "https://schema.org",
@@ -73,11 +74,19 @@ export default function RootLayout({
       <body
         className={cn(
           inter.variable,
-          "bg-background overflow-x-hidden antialiased space-y-[-1px] dark",
+          "bg-background overflow-x-hidden antialiased space-y-[-1px]",
         )}
+        suppressHydrationWarning
       >
-        <WebMcpProvider />
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <WebMcpProvider />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
