@@ -53,29 +53,12 @@
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground antialiased;
-  }
-}
-
-@layer components {
-  .doc-button {
-    @apply inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90;
+    @apply bg-[#fff2f0] text-foreground;
   }
 
-  .secondary-button {
-    @apply inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted;
-  }
-
-  .landing-shell {
-    @apply border border-black/[0.04] bg-gradient-to-b from-white/80 to-white/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] backdrop-blur-sm;
-  }
-
-  .landing-shell-soft {
-    @apply border border-black/[0.03] bg-gradient-to-b from-white/70 to-white/50 shadow-[0_1px_2px_rgba(0,0,0,0.03)] backdrop-blur-sm;
-  }
-
-  .landing-chip {
-    @apply border border-black/[0.04] bg-gradient-to-b from-white/60 to-white/40 shadow-[0_1px_2px_rgba(0,0,0,0.02)] backdrop-blur-sm;
+  body.dark {
+    @apply bg-[#080808] text-foreground;
   }
 }

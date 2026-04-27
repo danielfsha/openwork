@@ -1,5 +1,5 @@
 import "./globals.css";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import Script from "next/script";
 import { BotIdClient } from "botid/client";
 import { WebMcpProvider } from "../components/webmcp-provider";
@@ -13,15 +13,10 @@ const organizationSchema = {
   legalName: "Different AI",
   url: "https://openworklabs.com",
   logo: "https://openworklabs.com/openwork-mark.svg",
-  sameAs: ["https://github.com/different-ai/openwork"]
+  sameAs: ["https://github.com/different-ai/openwork"],
 };
 
-
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap"
-});
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata = {
   metadataBase: new URL("https://openworklabs.com"),
@@ -29,22 +24,22 @@ export const metadata = {
   description:
     "Bring your own model and provider, wire in your tools and context, and ship reusable agent setups across your org — with guardrails built in.",
   alternates: {
-    canonical: "/"
+    canonical: "/",
   },
   robots: {
     index: true,
-    follow: true
+    follow: true,
   },
   openGraph: {
     type: "website",
     siteName: "OpenWork",
     locale: "en_US",
-    images: ["/og-image-clean.png"]
+    images: ["/og-image-clean.png"],
   },
   twitter: {
     card: "summary_large_image",
-    images: ["/og-image-clean.png"]
-  }
+    images: ["/og-image-clean.png"],
+  },
 };
 
 const protectedRoutes = [
@@ -53,12 +48,12 @@ const protectedRoutes = [
 ];
 
 export default function RootLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cn(jetbrains.variable, "font-sans")}>
+    <html lang="en" className={cn(inter.variable, "font-sans")}>
       <head>
         <StructuredData data={organizationSchema} />
         <BotIdClient protect={protectedRoutes} />
@@ -71,11 +66,16 @@ export default function RootLayout({
         api_host: 'https://us.i.posthog.com',
         defaults: '2025-11-30',
         person_profiles: 'identified_only',
-    })`
+    })`,
           }}
         />
       </head>
-      <body className="overflow-x-hidden antialiased">
+      <body
+        className={cn(
+          inter.variable,
+          "bg-background overflow-x-hidden antialiased space-y-[-1px] dark",
+        )}
+      >
         <WebMcpProvider />
         {children}
       </body>

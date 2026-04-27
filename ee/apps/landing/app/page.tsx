@@ -4,15 +4,16 @@ import { headers } from "next/headers";
 import { StructuredData } from "../components/structured-data";
 import { baseOpenGraph } from "../lib/seo";
 import SiteFAQ from "@/components/site-faq";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = {
   alternates: {
-    canonical: "/"
+    canonical: "/",
   },
   openGraph: {
     ...baseOpenGraph,
-    url: "https://openworklabs.com"
-  }
+    url: "https://openworklabs.com",
+  },
 };
 
 const softwareApplicationSchema = {
@@ -28,13 +29,13 @@ const softwareApplicationSchema = {
     "@type": "Offer",
     price: "0",
     priceCurrency: "USD",
-    url: "https://openworklabs.com/pricing"
+    url: "https://openworklabs.com/pricing",
   },
   publisher: {
     "@type": "Organization",
     name: "OpenWork",
-    url: "https://openworklabs.com"
-  }
+    url: "https://openworklabs.com",
+  },
 };
 
 export default async function Home() {
@@ -53,6 +54,7 @@ export default async function Home() {
         isMobileVisitor={isMobileVisitor}
       />
       <SiteFAQ />
+      <SiteFooter />
     </>
   );
 }

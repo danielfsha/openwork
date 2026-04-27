@@ -15,99 +15,89 @@ const faqData = [
     category: "General",
     questions: [
       {
-        question: "What is Firecrawl?",
+        question: "What is OpenWork?",
         answer:
-          "Firecrawl is a powerful web scraping and data extraction tool designed for AI systems and developers.",
+          "OpenWork is an open-source desktop app that serves as an alternative to Claude Cowork, enabling teams to use 50+ LLMs with their own keys and share setups seamlessly.",
       },
       {
-        question: "What can I build with Firecrawl?",
+        question: "What can I build with OpenWork?",
         answer:
-          "You can build AI agents, data pipelines, web scrapers, and automated systems that need clean web data.",
+          "You can build agentic workflows, browser automation tasks, data extraction tools, and team-shared AI setups for tasks like social media interactions and file management.",
       },
       {
-        question: "Why do AI systems need Firecrawl?",
+        question: "Why choose OpenWork for teams?",
         answer:
-          "AI systems need clean, structured data. Firecrawl converts messy web content into AI-ready formats.",
+          "OpenWork allows BYOK (bring your own keys), local execution, and one-click sharing of skills, MCPs, plugins, and configs without vendor lock-in or privacy risks.",
       },
       {
-        question: "What are Search, Scrape, and Interact?",
+        question: "What are key features?",
         answer:
-          "These are the three core capabilities: Search finds pages, Scrape extracts data, and Interact automates browser actions.",
+          "Features include browser automation (e.g., liking tweets, extracting data to CSV), LLM integration with 50+ providers, task execution timelines, and enterprise self-hosting.",
       },
       {
-        question: "Does Firecrawl work with AI agents and MCPs?",
+        question: "Does OpenWork support browser automation?",
         answer:
-          "Yes, Firecrawl is designed to integrate seamlessly with AI agents and Model Context Protocols.",
+          "Yes, it turns plain-language requests into browser actions, such as navigating URLs, scrolling threads, interacting with elements, and saving data locally.",
       },
       {
-        question: "Who uses Firecrawl?",
+        question: "Who uses OpenWork?",
         answer:
-          "Developers, AI engineers, data scientists, and companies building AI-powered applications use Firecrawl.",
+          "Developers, AI teams, enterprises, and sales teams use it for outreach, data analysis, and automating repetitive web-based tasks.",
       },
       {
-        question: "Is Firecrawl open-source?",
+        question: "Is OpenWork open-source?",
         answer:
-          "Yes, Firecrawl has an open-source version available on GitHub for self-hosting.",
+          "Yes, OpenWork is fully open-source (MIT license) with 14.4K GitHub stars, available at github.com/different-ai/openwork.",
       },
       {
-        question: "How is Firecrawl different from other tools in the space?",
+        question: "How is OpenWork different from closed-source tools?",
         answer:
-          "Firecrawl provides clean, structured data optimized for AI systems with built-in rate limiting and error handling.",
+          "Unlike proprietary tools, OpenWork runs locally/on your servers, supports any LLM provider, and enables full customization and team sharing via links.",
       },
       {
-        question:
-          "What is the difference between the open-source version and the hosted version?",
+        question: "What deployment options exist?",
         answer:
-          "The hosted version includes managed infrastructure, automatic scaling, and premium support.",
-      },
-    ],
-  },
-  {
-    category: "API Related",
-    questions: [
-      {
-        question: "What SDKs are available?",
-        answer:
-          "We provide SDKs for Python, Node.js, Go, and REST API for other languages.",
-      },
-      {
-        question: "Where can I find my API key?",
-        answer:
-          "Your API key is available in your dashboard under Settings > API Keys.",
+          "Options include free desktop app, OpenWork Cloud for teams, and Enterprise for private deployments with support.",
       },
     ],
   },
   {
-    category: "Billing",
+    category: "Integrations",
     questions: [
       {
-        question: "Is Firecrawl free?",
+        question: "What LLMs are supported?",
         answer:
-          "Firecrawl offers a free tier with limited requests. Paid plans are available for higher usage.",
+          "OpenWork supports 50+ LLM providers; bring your own keys for ChatGPT, Claude, or others, with easy connection.",
       },
       {
-        question: "Is there a pay-per-use plan instead of monthly?",
+        question: "What are MCPs and skills?",
         answer:
-          "Yes, we offer both subscription plans and pay-as-you-go pricing options.",
+          "MCPs (Model Context Protocols) are custom servers for context/tools; skills are reusable workflows shared via links.",
       },
       {
-        question: "Do credits roll over to the next month?",
+        question: "Does it integrate with browsers?",
         answer:
-          "Credits on monthly plans do not roll over, but pay-as-you-go credits never expire.",
+          "Yes, it controls Chrome for tasks like navigating, scrolling, clicking, and data extraction with screenshots.",
+      },
+    ],
+  },
+  {
+    category: "Pricing & Billing",
+    questions: [
+      {
+        question: "Is OpenWork free?",
+        answer:
+          "The desktop app and core features are free and open-source; Cloud and Enterprise have paid plans.",
       },
       {
-        question: "How many credits does each request cost?",
+        question: "What are the pricing options?",
         answer:
-          "Credit costs vary by operation: simple scrapes cost 1 credit, complex operations may cost more.",
+          "Free desktop download; Cloud for shared workspaces; Enterprise for custom deployments—see pricing page.",
       },
       {
-        question: "Do you charge for failed requests?",
-        answer: "No, we only charge for successful requests that return data.",
-      },
-      {
-        question: "What payment methods do you accept?",
+        question: "Is there enterprise support?",
         answer:
-          "We accept all major credit cards, debit cards, and PayPal for payments.",
+          "Yes, Enterprise offers private servers, no telemetry, and dedicated support; contact sales.",
       },
     ],
   },
@@ -116,11 +106,6 @@ const faqData = [
 export default function SiteFAQ() {
   return (
     <SectionWrapper position="middle" className="bg-background">
-      {/* <h2 className="text-3xl lg:text-5xl font-bold mb-12 lg:mb-16">
-          Frequently Asked Questions
-        </h2> */}
-
-      {/* Single column layout with cards */}
       {faqData.map((category, idx) => (
         <div key={idx}>
           <div className="flex flex-col space-y-[-1] space-x-[-1]">
@@ -151,7 +136,7 @@ export default function SiteFAQ() {
                 <Accordion className={"space-y-[-1]"}>
                   {category.questions.map((item, qIdx) => (
                     <div
-                      className="relative p-4 px-6 bg-transparent border-b-[0.5px]"
+                      className="relative p-2 px-4 bg-transparent border-b-[0.5px]"
                       key={qIdx}
                     >
                       <>
