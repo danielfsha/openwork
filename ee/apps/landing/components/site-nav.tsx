@@ -8,7 +8,10 @@ import { SectionWrapper } from "@/components/ui/section-wrapper";
 import { cn } from "@/lib/utils";
 import { OpenWorkMark } from "./openwork-mark";
 import { SiteNavDesktopMenu } from "./site-nav-desktop-menu";
-import { SiteNavMobileMenu } from "./site-nav-mobile-menu";
+import {
+  SiteNavMobileMenu,
+  type SiteNavActiveItem,
+} from "./site-nav-mobile-menu";
 import { buttonVariants } from "./ui/button";
 
 type Props = {
@@ -17,7 +20,7 @@ type Props = {
   downloadHref?: string;
   mobilePrimaryHref?: string;
   mobilePrimaryLabel?: string;
-  active?: "home" | "pricing" | "download" | "enterprise" | "cloud" | "docs";
+  active?: SiteNavActiveItem;
 };
 
 export function SiteNav(props: Props) {
@@ -182,7 +185,7 @@ export function SiteNav(props: Props) {
 
       <SiteNavMobileMenu
         open={mobileOpen}
-        active={props.active}
+        active={props.active === "home" ? undefined : props.active}
         callHref={callHref}
         callExternal={callExternal}
         primaryHref={mobilePrimaryHref}

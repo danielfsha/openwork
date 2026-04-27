@@ -12,9 +12,11 @@ type MobileNavItem = {
   newTab?: boolean;
 };
 
+export type SiteNavActiveItem = MobileNavItem["key"] | "home";
+
 type SiteNavMobileMenuProps = {
   open: boolean;
-  active?: MobileNavItem["key"];
+  active?: SiteNavActiveItem;
   callHref: string;
   callExternal: boolean;
   primaryHref: string;
