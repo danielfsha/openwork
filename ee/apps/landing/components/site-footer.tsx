@@ -155,7 +155,7 @@ export function SiteFooter() {
         </footer>
       </SectionWrapper>
 
-      <SectionWrapper>
+      <SectionWrapper position="top">
         <div className="p-4 flex gap-4 flex items-center justify-center">
           {legalLinks.map((link) => (
             <FooterLinkItem key={`legal-${link.label}`} {...link} />
