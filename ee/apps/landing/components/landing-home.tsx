@@ -9,12 +9,14 @@ import { LandingCloudWorkersCard } from "./landing-cloud-workers-card";
 import {
   defaultLandingDemoFlowId,
   landingDemoFlows,
-  landingDemoFlowTimes
+  landingDemoFlowTimes,
 } from "./landing-demo-flows";
 import { LandingSharePackageCard } from "./landing-share-package-card";
 import { SiteFooter } from "./site-footer";
 import { SiteNav } from "./site-nav";
 import { WaitlistForm } from "./waitlist-form";
+import { SectionWrapper } from "./ui/section-wrapper";
+import { Button } from "./ui/button";
 
 type Props = {
   stars: string;
@@ -34,12 +36,14 @@ export function LandingHome(props: Props) {
   const enterpriseShowcaseRef = useRef<HTMLElement>(null);
   const showEnterpriseShowcase = useInView(enterpriseShowcaseRef, {
     once: true,
-    margin: "-15% 0px"
+    margin: "-15% 0px",
   });
 
   const activeDemo = useMemo(
-    () => landingDemoFlows.find((flow) => flow.id === activeDemoId) ?? landingDemoFlows[0],
-    [activeDemoId]
+    () =>
+      landingDemoFlows.find((flow) => flow.id === activeDemoId) ??
+      landingDemoFlows[0],
+    [activeDemoId],
   );
 
   const callLinkProps = externalLinkProps(props.callHref);
@@ -54,66 +58,67 @@ export function LandingHome(props: Props) {
     : externalLinkProps(primaryCtaHref);
 
   return (
-    <div className="relative min-h-screen overflow-hidden text-[#011627]">
+    <div>
       <LandingBackground />
-
-      <div className="relative z-10 flex min-h-screen flex-col items-center pb-3 pt-1 md:pb-4 md:pt-2">
-        <div className="w-full">
-          <SiteNav
-            stars={props.stars}
-            downloadHref={props.downloadHref}
-            callUrl={props.callHref}
-            mobilePrimaryHref="https://app.openworklabs.com"
-            mobilePrimaryLabel="Open app"
-            active="home"
-          />
-        </div>
-
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-16 px-6 pb-24 md:gap-20 md:px-8 md:pb-28">
-          <section className="max-w-4xl pt-8 md:pt-12">
-            <h1 className="mb-5 text-4xl font-medium leading-[1.1] tracking-tight md:text-5xl lg:text-6xl">
-              The open source Claude Cowork<br />for your team
-            </h1>
-            <p className="mb-6 max-w-4xl text-lg leading-relaxed text-gray-700 md:mb-7 md:text-xl">
-              OpenWork is the desktop app that lets you use 50+ LLMs, bring your
-              own keys, and share your setups seamlessly with your team.
-            </p>
-
-            <div className="mt-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-              <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                <a
-                  href={primaryCtaHref}
-                  className="doc-button inline-flex items-center gap-2"
-                  {...primaryCtaLinkProps}
-                >
-                  {primaryCtaLabel} <Download size={18} />
-                </a>
-                <a
-                  href={props.callHref}
-                  className="secondary-button"
-                  {...callLinkProps}
-                >
-                  Contact sales
-                </a>
-              </div>
-
-              <div className="flex items-center gap-2 opacity-80 sm:ml-4">
-                <span className="text-[13px] font-medium text-gray-500">
+      <SiteNav
+        stars={props.stars}
+        downloadHref={props.downloadHref}
+        callUrl={props.callHref}
+        mobilePrimaryHref="https://app.openworklabs.com"
+        mobilePrimaryLabel="Open app"
+        active="home"
+      />
+        <SectionWrapper position="middle">
+          <section className="py-16 px-6 md:py-24 md:px-8 lg:py-32">
+            <div className="mx-auto max-w-3xl">
+              {/* Badge */}
+              <div className="mb-6 flex items-center gap-2">
+                <span className="text-sm font-medium text-muted-foreground">
                   Backed by
                 </span>
                 <div className="flex items-center gap-1.5">
-                  <div className="flex h-[18px] w-[18px] items-center justify-center rounded-[4px] bg-[#ff6600] text-[11px] font-bold leading-none text-white">
+                  <div className="flex h-5 w-5 items-center justify-center rounded bg-[#ff6600] text-xs font-bold text-white">
                     Y
                   </div>
-                  <span className="text-[13px] font-semibold tracking-tight text-gray-600">
+                  <span className="text-sm font-semibold text-foreground">
                     Combinator
                   </span>
                 </div>
               </div>
 
+              {/* Headline */}
+              <h1 className="text-4xl font-medium leading-[1.08] tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+                The open source
+                <br />
+                Claude Cowork
+                <br />
+                <span className="text-muted-foreground">for your team</span>
+              </h1>
+
+              {/* Subheadline */}
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+                OpenWork is the desktop app that lets you use 50+ LLMs, bring your
+                own keys, and share your setups seamlessly with your team.
+              </p>
+
+              {/* CTAs */}
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+                <a href={primaryCtaHref} {...primaryCtaLinkProps}>
+                  <Button size="lg" className="w-full sm:w-auto">
+                    {primaryCtaLabel} <Download size={18} />
+                  </Button>
+                </a>
+                <a href={props.callHref} {...callLinkProps}>
+                  <Button variant="ghost" size="lg" className="w-full sm:w-auto">
+                    Contact sales
+                  </Button>
+                </a>
+              </div>
             </div>
           </section>
+        </SectionWrapper>
 
+        <div className="mx-auto flex w-full max-w-5xl flex-col gap-16 px-6 pb-24 md:gap-20 md:px-8 md:pb-28">
           {props.isMobileVisitor ? (
             <section
               id="mobile-signup"
@@ -126,8 +131,9 @@ export function LandingHome(props: Props) {
                 Start on mobile. Continue on desktop.
               </h2>
               <p className="mb-5 text-[15px] leading-7 text-gray-600">
-                OpenWork is a desktop app. Sign up here from your phone and keep the
-                desktop install flow handy for when you switch to your computer.
+                OpenWork is a desktop app. Sign up here from your phone and keep
+                the desktop install flow handy for when you switch to your
+                computer.
               </p>
               <WaitlistForm contactHref={props.callHref} />
               <p className="mt-4 text-[13px] leading-6 text-gray-500">
@@ -148,7 +154,7 @@ export function LandingHome(props: Props) {
                   OpenWork
                 </div>
               </div>
- 
+
               <div className="bg-white p-4 md:p-6">
                 <LandingAppDemoPanel
                   flows={landingDemoFlows}
@@ -179,10 +185,16 @@ export function LandingHome(props: Props) {
                           <motion.div
                             layoutId="active-pill"
                             className="absolute inset-0 rounded-full border border-gray-100 bg-white shadow-sm"
-                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 400,
+                              damping: 30,
+                            }}
                           />
                         ) : null}
-                        <span className="relative z-10">{flow.categoryLabel}</span>
+                        <span className="relative z-10">
+                          {flow.categoryLabel}
+                        </span>
                       </button>
                     );
                   })}
@@ -219,7 +231,9 @@ export function LandingHome(props: Props) {
               For Teams &amp; Enterprises
             </div>
             <h2 className="mb-16 max-w-2xl text-3xl font-medium leading-[1.15] tracking-tight md:text-4xl lg:text-5xl">
-              Build skills, workflows, connections once.<br />Share a link. Your team runs it instantly.
+              Build skills, workflows, connections once.
+              <br />
+              Share a link. Your team runs it instantly.
             </h2>
 
             <div className="flex flex-col gap-12 lg:flex-row lg:gap-20">
@@ -233,14 +247,18 @@ export function LandingHome(props: Props) {
                   }`}
                   onClick={() => setActiveUseCase(0)}
                 >
-                  <h3 className={`mb-2 text-xl font-medium ${
-                    activeUseCase === 0 ? "text-[#011627]" : "text-gray-800"
-                  }`}>
+                  <h3
+                    className={`mb-2 text-xl font-medium ${
+                      activeUseCase === 0 ? "text-[#011627]" : "text-gray-800"
+                    }`}
+                  >
                     Share everything in one link.
                   </h3>
-                  <p className={`text-sm leading-relaxed ${
-                    activeUseCase === 0 ? "text-[#011627]" : "text-gray-600"
-                  }`}>
+                  <p
+                    className={`text-sm leading-relaxed ${
+                      activeUseCase === 0 ? "text-[#011627]" : "text-gray-600"
+                    }`}
+                  >
                     Create skills, MCPs, plugins, and configs on your desktop.
                     Generate a single link that packages your entire setup for
                     your team.
@@ -256,14 +274,18 @@ export function LandingHome(props: Props) {
                   }`}
                   onClick={() => setActiveUseCase(1)}
                 >
-                  <h3 className={`mb-2 text-xl font-medium ${
-                    activeUseCase === 1 ? "text-[#011627]" : "text-gray-800"
-                  }`}>
+                  <h3
+                    className={`mb-2 text-xl font-medium ${
+                      activeUseCase === 1 ? "text-[#011627]" : "text-gray-800"
+                    }`}
+                  >
                     Import in one click.
                   </h3>
-                  <p className={`text-sm leading-relaxed ${
-                    activeUseCase === 1 ? "text-[#011627]" : "text-gray-600"
-                  }`}>
+                  <p
+                    className={`text-sm leading-relaxed ${
+                      activeUseCase === 1 ? "text-[#011627]" : "text-gray-600"
+                    }`}
+                  >
                     Your teammate opens the link and imports everything. Skills,
                     MCPs, plugins, configs. No terminal, no setup guide, no
                     technical knowledge needed.
@@ -279,14 +301,18 @@ export function LandingHome(props: Props) {
                   }`}
                   onClick={() => setActiveUseCase(2)}
                 >
-                  <h3 className={`mb-2 text-xl font-medium ${
-                    activeUseCase === 2 ? "text-[#011627]" : "text-gray-800"
-                  }`}>
+                  <h3
+                    className={`mb-2 text-xl font-medium ${
+                      activeUseCase === 2 ? "text-[#011627]" : "text-gray-800"
+                    }`}
+                  >
                     Ready to run.
                   </h3>
-                  <p className={`text-sm leading-relaxed ${
-                    activeUseCase === 2 ? "text-[#011627]" : "text-gray-600"
-                  }`}>
+                  <p
+                    className={`text-sm leading-relaxed ${
+                      activeUseCase === 2 ? "text-[#011627]" : "text-gray-600"
+                    }`}
+                  >
                     Everything imported. Skills already executing.
                   </p>
                 </button>
@@ -294,7 +320,9 @@ export function LandingHome(props: Props) {
 
               <div
                 className="relative flex min-h-[400px] w-full items-center justify-center overflow-hidden rounded-3xl border border-gray-100 bg-cover bg-center p-6 lg:w-2/3 md:p-10"
-                style={{ backgroundImage: "url('/enterprise-showcase-bg.jpg')" }}
+                style={{
+                  backgroundImage: "url('/enterprise-showcase-bg.jpg')",
+                }}
               >
                 {showEnterpriseShowcase ? (
                   <div className="grid w-full [&>*]:col-start-1 [&>*]:row-start-1">
@@ -317,91 +345,123 @@ export function LandingHome(props: Props) {
                       transition={{ duration: 0.2 }}
                       className={`z-10 flex w-full justify-center ${activeUseCase !== 2 ? "pointer-events-none" : ""}`}
                     >
-                        <div className="flex w-full max-w-lg flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                          {/* App chrome */}
-                          <div className="flex items-center gap-3 border-b border-gray-100 bg-gray-50/80 px-4 py-2.5">
-                            <div className="flex gap-1.5">
-                              <div className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
-                              <div className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
-                              <div className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
+                      <div className="flex w-full max-w-lg flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                        {/* App chrome */}
+                        <div className="flex items-center gap-3 border-b border-gray-100 bg-gray-50/80 px-4 py-2.5">
+                          <div className="flex gap-1.5">
+                            <div className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
+                            <div className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
+                            <div className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
+                          </div>
+                          <div className="text-[12px] font-medium text-gray-500">
+                            OpenWork
+                          </div>
+                        </div>
+
+                        <div className="flex flex-1">
+                          {/* Sidebar */}
+                          <div className="hidden w-[180px] flex-col border-r border-gray-100 bg-gray-50/50 p-3 sm:flex">
+                            <div className="flex flex-col gap-1.5">
+                              <div className="flex items-center justify-between rounded-2xl bg-white px-2.5 py-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="h-6 w-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-400" />
+                                  <span className="text-[11px] font-medium text-[#011627]">
+                                    Meeting Brief
+                                  </span>
+                                </div>
+                                <span className="text-[9px] text-green-600">
+                                  Active
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between rounded-lg px-2.5 py-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="h-6 w-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-400" />
+                                  <span className="text-[11px] font-medium text-gray-600">
+                                    Contract Reviewer
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between rounded-lg px-2.5 py-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="h-6 w-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-400" />
+                                  <span className="text-[11px] font-medium text-gray-600">
+                                    Outreach CRM
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                            <div className="text-[12px] font-medium text-gray-500">OpenWork</div>
+
+                            <div className="mt-4 flex flex-col gap-1 border-t border-gray-100 pt-3">
+                              <div className="truncate rounded-2xl bg-white px-2.5 py-1.5 text-[10px] text-gray-500">
+                                Generate brief for Acme...
+                                <span className="ml-1 text-gray-400">
+                                  1s ago
+                                </span>
+                              </div>
+                              <div className="truncate px-2.5 py-1.5 text-[10px] text-gray-400">
+                                Review NDA draft...
+                                <span className="ml-1">12m ago</span>
+                              </div>
+                            </div>
                           </div>
 
-                          <div className="flex flex-1">
-                            {/* Sidebar */}
-                            <div className="hidden w-[180px] flex-col border-r border-gray-100 bg-gray-50/50 p-3 sm:flex">
-                              <div className="flex flex-col gap-1.5">
-                                <div className="flex items-center justify-between rounded-2xl bg-white px-2.5 py-2">
-                                  <div className="flex items-center gap-2">
-                                    <span className="h-6 w-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-400" />
-                                    <span className="text-[11px] font-medium text-[#011627]">Meeting Brief</span>
-                                  </div>
-                                  <span className="text-[9px] text-green-600">Active</span>
+                          {/* Main content - chat */}
+                          <div className="flex flex-1 flex-col">
+                            <div className="flex flex-1 flex-col gap-4 p-4">
+                              {/* User prompt */}
+                              <div className="self-end rounded-2xl rounded-br-md bg-gray-100 px-4 py-2.5 text-[12px] leading-relaxed text-[#011627]">
+                                Prepare a meeting brief for tomorrow&apos;s call
+                                with Acme Corp. Pull context from HubSpot and
+                                Notion.
+                              </div>
+
+                              {/* Execution timeline */}
+                              <div className="flex flex-col gap-1 pl-1">
+                                <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+                                  <span className="text-gray-300">
+                                    &rsaquo;
+                                  </span>{" "}
+                                  Execution 1 step — Queried HubSpot MCP for
+                                  deal history
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg px-2.5 py-2">
-                                  <div className="flex items-center gap-2">
-                                    <span className="h-6 w-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-400" />
-                                    <span className="text-[11px] font-medium text-gray-600">Contract Reviewer</span>
-                                  </div>
+                                <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+                                  <span className="text-gray-300">
+                                    &rsaquo;
+                                  </span>{" "}
+                                  Execution 2 steps — Pulled Notion meeting
+                                  notes
                                 </div>
-                                <div className="flex items-center justify-between rounded-lg px-2.5 py-2">
-                                  <div className="flex items-center gap-2">
-                                    <span className="h-6 w-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-400" />
-                                    <span className="text-[11px] font-medium text-gray-600">Outreach CRM</span>
-                                  </div>
+                                <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+                                  <span className="text-gray-300">
+                                    &rsaquo;
+                                  </span>{" "}
+                                  Execution 1 step — Generated brief and saved
+                                  to desktop
                                 </div>
                               </div>
 
-                              <div className="mt-4 flex flex-col gap-1 border-t border-gray-100 pt-3">
-                                <div className="truncate rounded-2xl bg-white px-2.5 py-1.5 text-[10px] text-gray-500">
-                                  Generate brief for Acme...
-                                  <span className="ml-1 text-gray-400">1s ago</span>
-                                </div>
-                                <div className="truncate px-2.5 py-1.5 text-[10px] text-gray-400">
-                                  Review NDA draft...
-                                  <span className="ml-1">12m ago</span>
-                                </div>
+                              {/* Response */}
+                              <div className="text-[12px] leading-relaxed text-[#011627]">
+                                I&apos;ve prepared your meeting brief for the
+                                Acme Corp call. It includes deal history, recent
+                                notes, and 3 talking points.
                               </div>
                             </div>
 
-                            {/* Main content - chat */}
-                            <div className="flex flex-1 flex-col">
-                              <div className="flex flex-1 flex-col gap-4 p-4">
-                                {/* User prompt */}
-                                <div className="self-end rounded-2xl rounded-br-md bg-gray-100 px-4 py-2.5 text-[12px] leading-relaxed text-[#011627]">
-                                  Prepare a meeting brief for tomorrow&apos;s call with Acme Corp. Pull context from HubSpot and Notion.
-                                </div>
-
-                                {/* Execution timeline */}
-                                <div className="flex flex-col gap-1 pl-1">
-                                  <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
-                                    <span className="text-gray-300">&rsaquo;</span> Execution 1 step — Queried HubSpot MCP for deal history
-                                  </div>
-                                  <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
-                                    <span className="text-gray-300">&rsaquo;</span> Execution 2 steps — Pulled Notion meeting notes
-                                  </div>
-                                  <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
-                                    <span className="text-gray-300">&rsaquo;</span> Execution 1 step — Generated brief and saved to desktop
-                                  </div>
-                                </div>
-
-                                {/* Response */}
-                                <div className="text-[12px] leading-relaxed text-[#011627]">
-                                  I&apos;ve prepared your meeting brief for the Acme Corp call. It includes deal history, recent notes, and 3 talking points.
-                                </div>
-                              </div>
-
-                              {/* Input bar */}
-                              <div className="border-t border-gray-100 p-3">
-                                <div className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2">
-                                  <span className="text-[12px] text-gray-400">Describe your task</span>
-                                  <span className="rounded-full bg-[#011627] px-3 py-1 text-[10px] font-medium text-white">Run Task</span>
-                                </div>
+                            {/* Input bar */}
+                            <div className="border-t border-gray-100 p-3">
+                              <div className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2">
+                                <span className="text-[12px] text-gray-400">
+                                  Describe your task
+                                </span>
+                                <span className="rounded-full bg-[#011627] px-3 py-1 text-[10px] font-medium text-white">
+                                  Run Task
+                                </span>
                               </div>
                             </div>
                           </div>
                         </div>
+                      </div>
                     </motion.div>
                   </div>
                 ) : (
@@ -415,7 +475,6 @@ export function LandingHome(props: Props) {
 
           <SiteFooter />
         </div>
-      </div>
     </div>
   );
 }

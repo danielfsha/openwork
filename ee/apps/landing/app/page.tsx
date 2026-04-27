@@ -3,6 +3,7 @@ import { getGithubData } from "../lib/github";
 import { headers } from "next/headers";
 import { StructuredData } from "../components/structured-data";
 import { baseOpenGraph } from "../lib/seo";
+import SiteFAQ from "@/components/site-faq";
 
 export const metadata = {
   alternates: {
@@ -51,6 +52,7 @@ export default async function Home() {
         callHref={cal}
         isMobileVisitor={isMobileVisitor}
       />
+      <SiteFAQ />
     </>
   );
 }
