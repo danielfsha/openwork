@@ -60,7 +60,7 @@ export const ThemeSwitcher: React.FC = () => {
             itemRefs.current.delete(tab.id);
           }}
           onClick={() => setTheme(tab.id)}
-          className={`relative z-10 flex items-center rounded-full px-2.5 py-1 text-sm font-medium transition-colors duration-300 ${tab.id === currentStepId && "text-primary-foreground"}`}
+          className={`relative z-10 flex items-center rounded-full px-2.5 py-1.5 text-sm font-medium transition-colors duration-300 ${tab.id === currentStepId && "text-primary-foreground"}`}
           aria-pressed={tab.id === currentStepId}
           type="button"
         >

@@ -1,23 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import { ChevronRight, Download, Menu, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { OpenWorkMark } from "./openwork-mark";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import { cn } from "@/lib/utils";
+import { Menu, X } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { SectionWrapper } from "@/components/ui/section-wrapper";
+import { cn } from "@/lib/utils";
+import { OpenWorkMark } from "./openwork-mark";
+import { SiteNavDesktopMenu } from "./site-nav-desktop-menu";
+import { SiteNavMobileMenu } from "./site-nav-mobile-menu";
 import { buttonVariants } from "./ui/button";
-import { useNavHoverIndicator } from "../hooks/use-nav-hover-indicator";
 
 type Props = {
   stars: string;
@@ -28,104 +20,14 @@ type Props = {
   active?: "home" | "pricing" | "download" | "enterprise" | "cloud" | "docs";
 };
 
-const productItems = [
-  {
-    title: "Intake",
-    href: "/#intake",
-    description: "Make your product operations self-driving",
-  },
-  {
-    title: "Plan",
-    href: "/#plan",
-    description: "Plan and navigate from idea to launch",
-  },
-  {
-    title: "Build",
-    href: "/#build",
-    description: "Move work forward across teams and agents",
-  },
-  {
-    title: "Diffs",
-    href: "/#diffs",
-    description: "Make code review effortless",
-  },
-  {
-    title: "Monitor",
-    href: "/#monitor",
-    description: "Understand progress at scale",
-  },
-  {
-    title: "Integrations",
-    href: "/#integrations",
-    description: "Collaborate across tools",
-  },
-];
-
-const resourceItems = [
-  {
-    title: "Documentation",
-    href: "/docs",
-    description: "Learn how to use OpenWork",
-    external: true,
-  },
-  {
-    title: "GitHub",
-    href: "https://github.com/different-ai/openwork",
-    description: "View source and contribute",
-    external: true,
-  },
-  { title: "Changelog", href: "/changelog", description: "See what's new" },
-];
-
-function ListItem({
-  className,
-  title,
-  children,
-  href,
-  external,
-  ...props
-}: React.ComponentPropsWithoutRef<"li"> & {
-  href: string;
-  external?: boolean;
-}) {
-  return (
-    <li {...props}>
-      <NavigationMenuLink
-        href={href}
-        target={external ? "_blank" : undefined}
-        rel={external ? "noreferrer" : undefined}
-        className={cn(
-          "block select-none rounded-lg p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-          className,
-        )}
-      >
-        <div className="text-sm font-medium leading-none">{title}</div>
-        <p className="mt-1.5 line-clamp-2 text-sm leading-snug text-muted-foreground">
-          {children}
-        </p>
-      </NavigationMenuLink>
-    </li>
-  );
-}
-
 export function SiteNav(props: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [navVisible, setNavVisible] = useState(true);
   const lastScrollY = useRef(0);
-  const {
-    hoveredItem,
-    hoverRect,
-    navContainerRef,
-    itemRefs,
-    handleMouseEnter,
-    handleMouseLeave,
-  } = useNavHoverIndicator();
 
   useEffect(() => {
     const onScroll = () => {
       const nextY = window.scrollY;
-      setScrolled(nextY > 10);
 
       if (nextY < 12) {
         setNavVisible(true);
@@ -150,11 +52,8 @@ export function SiteNav(props: Props) {
   }, [mobileOpen]);
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+
     return () => {
       document.body.style.overflow = "";
     };
@@ -167,22 +66,6 @@ export function SiteNav(props: Props) {
   const mobilePrimaryLabel = props.mobilePrimaryLabel || "Desktop";
   const callExternal = /^https?:\/\//.test(callHref);
   const mobilePrimaryExternal = /^https?:\/\//.test(mobilePrimaryHref);
-
-  const mobileNavItems = [
-    { href: "/docs", label: "Docs", key: "docs", newTab: true },
-    { href: "/pricing", label: "Pricing", key: "pricing" },
-    { href: "/download", label: "Desktop", key: "download" },
-    { href: "https://app.openworklabs.com", label: "Cloud", key: "cloud" },
-    { href: "/enterprise", label: "Enterprise", key: "enterprise" },
-  ];
-
-  const opensInNewTab = (item: (typeof mobileNavItems)[number]) =>
-    ("newTab" in item && item.newTab) || /^(?:https?:\/\/)/.test(item.href);
-
-  const navLinkClass = (isActive: boolean) =>
-    isActive
-      ? "text-foreground"
-      : "text-muted-foreground transition-colors hover:text-foreground";
 
   return (
     <>
@@ -205,175 +88,7 @@ export function SiteNav(props: Props) {
               </span>
             </Link>
 
-            <div
-              ref={navContainerRef}
-              className="relative hidden md:block"
-              onMouseLeave={handleMouseLeave}
-            >
-              {hoveredItem ? (
-                <motion.div
-                  initial={false}
-                  className="pointer-events-none absolute inset-y-[2px] z-0 rounded-full dark:bg-white/10 bg-black/10"
-                  animate={{
-                    left: hoverRect.left,
-                    width: hoverRect.width,
-                  }}
-                  transition={{
-                    type: "spring",
-                    bounce: 0.15,
-                    duration: 0.25,
-                  }}
-                />
-              ) : null}
-
-              <NavigationMenu className="relative z-10">
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <div
-                      ref={(el) => {
-                        if (el) itemRefs.current.set("product", el);
-                      }}
-                      onMouseEnter={() => handleMouseEnter("product")}
-                    >
-                      <NavigationMenuTrigger className="bg-transparent hover:bg-transparent data-popup-open:bg-transparent">
-                        Product
-                      </NavigationMenuTrigger>
-                    </div>
-                    <NavigationMenuContent>
-                      <ul className="grid w-[400px] gap-1 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                        {productItems.map((item) => (
-                          <ListItem
-                            key={item.title}
-                            title={item.title}
-                            href={item.href}
-                          >
-                            {item.description}
-                          </ListItem>
-                        ))}
-                      </ul>
-                      <div className="mt-2 border-t border-border px-1 pt-2">
-                        <Link
-                          href="/changelog"
-                          className="flex items-center justify-between rounded-lg p-3 text-sm transition-colors hover:bg-accent"
-                        >
-                          <span className="font-medium">
-                            New: Linear Agent MCP support
-                          </span>
-                          <span className="text-blue-600 hover:text-blue-700">
-                            Changelog
-                          </span>
-                        </Link>
-                      </div>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-
-                  <NavigationMenuItem>
-                    <div
-                      ref={(el) => {
-                        if (el) itemRefs.current.set("resources", el);
-                      }}
-                      onMouseEnter={() => handleMouseEnter("resources")}
-                    >
-                      <NavigationMenuTrigger className="bg-transparent hover:bg-transparent data-popup-open:bg-transparent">
-                        Resources
-                      </NavigationMenuTrigger>
-                    </div>
-                    <NavigationMenuContent>
-                      <ul className="w-[300px]">
-                        {resourceItems.map((item) => (
-                          <ListItem
-                            key={item.title}
-                            title={item.title}
-                            href={item.href}
-                            external={item.external}
-                          >
-                            {item.description}
-                          </ListItem>
-                        ))}
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-
-                  <NavigationMenuItem>
-                    <div
-                      ref={(el) => {
-                        if (el) itemRefs.current.set("pricing", el);
-                      }}
-                      onMouseEnter={() => handleMouseEnter("pricing")}
-                    >
-                      <NavigationMenuLink
-                        href="/pricing"
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          "bg-transparent hover:bg-transparent",
-                        )}
-                      >
-                        Pricing
-                      </NavigationMenuLink>
-                    </div>
-                  </NavigationMenuItem>
-
-                  <NavigationMenuItem>
-                    <div
-                      ref={(el) => {
-                        if (el) itemRefs.current.set("download", el);
-                      }}
-                      onMouseEnter={() => handleMouseEnter("download")}
-                    >
-                      <NavigationMenuLink
-                        href="/download"
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          "bg-transparent hover:bg-transparent",
-                        )}
-                      >
-                        Desktop
-                      </NavigationMenuLink>
-                    </div>
-                  </NavigationMenuItem>
-
-                  <NavigationMenuItem>
-                    <div
-                      ref={(el) => {
-                        if (el) itemRefs.current.set("cloud", el);
-                      }}
-                      onMouseEnter={() => handleMouseEnter("cloud")}
-                    >
-                      <NavigationMenuLink
-                        href="https://app.openworklabs.com"
-                        target="_blank"
-                        rel="noreferrer"
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          "bg-transparent hover:bg-transparent",
-                        )}
-                      >
-                        Cloud
-                      </NavigationMenuLink>
-                    </div>
-                  </NavigationMenuItem>
-
-                  <NavigationMenuItem>
-                    <div
-                      ref={(el) => {
-                        if (el) itemRefs.current.set("enterprise", el);
-                      }}
-                      onMouseEnter={() => handleMouseEnter("enterprise")}
-                    >
-                      <NavigationMenuLink
-                        href="/enterprise"
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          "bg-transparent hover:bg-transparent",
-                        )}
-                      >
-                        Enterprise
-                      </NavigationMenuLink>
-                    </div>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
-            </div>
+            <SiteNavDesktopMenu />
 
             <div className="flex items-center gap-2">
               <a
@@ -429,7 +144,7 @@ export function SiteNav(props: Props) {
                 </Link>
                 <button
                   type="button"
-                  className="relative rounded-full text-foreground md:hidden size-12 flex items-center justify-center"
+                  className="relative flex size-12 items-center justify-center rounded-full text-foreground md:hidden"
                   onClick={() => setMobileOpen((current) => !current)}
                   aria-expanded={mobileOpen}
                   aria-label={
@@ -452,9 +167,9 @@ export function SiteNav(props: Props) {
                       }}
                     >
                       {mobileOpen ? (
-                        <X className="w-6 h-6" />
+                        <X className="h-6 w-6" />
                       ) : (
-                        <Menu className="w-6 h-6" />
+                        <Menu className="h-6 w-6" />
                       )}
                     </motion.div>
                   </AnimatePresence>
@@ -465,62 +180,16 @@ export function SiteNav(props: Props) {
         </SectionWrapper>
       </header>
 
-      {mobileOpen ? (
-        <div className="fixed inset-0  bg-background md:hidden z-[10]">
-          <div className="mx-auto flex h-dvh w-full max-w-md flex-col px-1 pb-1 pt-[82px]">
-            <div className="flex flex-1 flex-col overflow-hidden rounded-[22px] bg-[#f7f7f8]">
-              <div className="flex-1 overflow-y-auto px-4 pt-2">
-                <div className="space-y-1 text-[20px] font-medium tracking-tight text-[#111111]">
-                  {mobileNavItems.map((item) => (
-                    <Link
-                      key={item.key}
-                      href={item.href}
-                      {...(opensInNewTab(item)
-                        ? { target: "_blank", rel: "noreferrer" }
-                        : {})}
-                      className={cn(
-                        "flex items-center justify-between rounded-xl px-4 py-3",
-                        navLinkClass(props.active === item.key),
-                      )}
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      <span>{item.label}</span>
-                      <ChevronRight className="h-4 w-4 text-[#9ca3af]" />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              <div className="p-3 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
-                <div className="grid grid-cols-2 gap-2">
-                  <a
-                    href={callHref}
-                    className={cn(
-                      buttonVariants({ variant: "outline", size: "lg" }),
-                      "h-11 justify-center rounded-full text-base",
-                    )}
-                    rel={callExternal ? "noreferrer" : undefined}
-                    target={callExternal ? "_blank" : undefined}
-                  >
-                    Contact sales
-                  </a>
-                  <a
-                    href={mobilePrimaryHref}
-                    className={cn(
-                      buttonVariants({ variant: "default", size: "lg" }),
-                      "h-11 justify-center rounded-full text-base",
-                    )}
-                    rel={mobilePrimaryExternal ? "noreferrer" : undefined}
-                    target={mobilePrimaryExternal ? "_blank" : undefined}
-                  >
-                    {mobilePrimaryLabel}
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <SiteNavMobileMenu
+        open={mobileOpen}
+        active={props.active}
+        callHref={callHref}
+        callExternal={callExternal}
+        primaryHref={mobilePrimaryHref}
+        primaryLabel={mobilePrimaryLabel}
+        primaryExternal={mobilePrimaryExternal}
+        onClose={() => setMobileOpen(false)}
+      />
     </>
   );
 }

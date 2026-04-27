@@ -72,7 +72,7 @@ export function LandingHome(props: Props) {
           <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-start lg:gap-10">
             <div>
               {/* Badge */}
-              <div className="mb-6 flex items-center gap-2">
+              {/* <div className="mb-6 flex items-center gap-2">
                 <span className="text-sm font-medium text-muted-foreground">
                   Backed by
                 </span>
@@ -82,7 +82,7 @@ export function LandingHome(props: Props) {
                   </div>
                   <span className="text-sm text-foreground">Combinator</span>
                 </div>
-              </div>
+              </div> */}
 
               {/* Headline */}
               <h1 className="text-4xl font-normal leading-[1.12] tracking-tight text-foreground sm:text-4xl md:text-5xl">
@@ -111,7 +111,7 @@ export function LandingHome(props: Props) {
                   <Button
                     variant="ghost"
                     size="lg"
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto dark"
                   >
                     Contact sales
                   </Button>
