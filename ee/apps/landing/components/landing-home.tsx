@@ -1,20 +1,6 @@
 "use client";
-import { AnimatePresence, motion, useInView } from "framer-motion";
-import { Download, Users } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
-
-import { LandingAppDemoPanel } from "./landing-app-demo-panel";
-import { LandingBackground } from "./landing-background";
-import { LandingCloudWorkersCard } from "./landing-cloud-workers-card";
-import {
-  defaultLandingDemoFlowId,
-  landingDemoFlows,
-  landingDemoFlowTimes,
-} from "./landing-demo-flows";
-import { LandingSharePackageCard } from "./landing-share-package-card";
-import { SiteFooter } from "./site-footer";
+import { LandingFeatures } from "@/components/landing-features";
 import { SiteNav } from "./site-nav";
-import { WaitlistForm } from "./waitlist-form";
 import { SectionWrapper } from "./ui/section-wrapper";
 import { Button } from "./ui/button";
 
@@ -31,21 +17,6 @@ const externalLinkProps = (href: string) =>
     : {};
 
 export function LandingHome(props: Props) {
-  const [activeDemoId, setActiveDemoId] = useState(defaultLandingDemoFlowId);
-  const [activeUseCase, setActiveUseCase] = useState(0);
-  const enterpriseShowcaseRef = useRef<HTMLElement>(null);
-  const showEnterpriseShowcase = useInView(enterpriseShowcaseRef, {
-    once: true,
-    margin: "-15% 0px",
-  });
-
-  const activeDemo = useMemo(
-    () =>
-      landingDemoFlows.find((flow) => flow.id === activeDemoId) ??
-      landingDemoFlows[0],
-    [activeDemoId],
-  );
-
   const callLinkProps = externalLinkProps(props.callHref);
   const primaryCtaHref = props.isMobileVisitor
     ? "https://app.openworklabs.com"
@@ -120,6 +91,10 @@ export function LandingHome(props: Props) {
             </div>
           </div>
         </section>
+      </SectionWrapper>
+
+      <SectionWrapper position="middle">
+        <LandingFeatures />
       </SectionWrapper>
     </div>
   );

@@ -5,6 +5,7 @@ import { StructuredData } from "../components/structured-data";
 import { baseOpenGraph } from "../lib/seo";
 import SiteFAQ from "@/components/site-faq";
 import { SiteFooter } from "@/components/site-footer";
+import { LandingTryNow } from "@/components/landing-trynow";
 
 export const metadata = {
   alternates: {
@@ -54,6 +55,7 @@ export default async function Home() {
         isMobileVisitor={isMobileVisitor}
       />
       <SiteFAQ />
+      <LandingTryNow />
       <SiteFooter />
     </>
   );

@@ -118,7 +118,7 @@ export default function SiteFAQ() {
                   <CornerDecoration position="bottom-left" />
                   <CornerDecoration position="bottom-right" />
                 </>
-                <h3 className="text-2xl lg:text-3xl font-medium p-6">
+                <h3 className="text-2xl lg:text-3xl font-medium p-6 ">
                   {category.category}
                 </h3>
               </div>

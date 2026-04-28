@@ -58,7 +58,7 @@ export function SiteNavMobileMenu({
   }
 
   return (
-    <div className="fixed inset-0 z-[10] bg-background md:hidden">
+    <div className="fixed inset-0 z-[30] bg-background md:hidden">
       <div className="mx-auto flex h-dvh w-full max-w-md flex-col px-1 pb-1 pt-[82px]">
         <div className="flex flex-1 flex-col overflow-hidden rounded-[22px] bg-[#f7f7f8]">
           <div className="flex-1 overflow-y-auto px-4 pt-2">
