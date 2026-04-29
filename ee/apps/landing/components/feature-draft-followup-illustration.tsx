@@ -56,13 +56,29 @@ const STATUS_LINES = [
 
 type ComposerPhase = "compose" | "sending" | "processing";
 
-export function DraftFollowupIllustration() {
+type DraftFollowupIllustrationProps = {
+  isActive?: boolean;
+  replayKey?: string | number;
+  onSequenceComplete?: () => void;
+};
+
+export function DraftFollowupIllustration({
+  isActive = true,
+  replayKey = 0,
+  onSequenceComplete,
+}: DraftFollowupIllustrationProps) {
   const [phase, setPhase] = useState<ComposerPhase>("compose");
   const [typedDone, setTypedDone] = useState(false);
   const [lineIndex, setLineIndex] = useState(0);
 
   useEffect(() => {
-    if (!typedDone || phase !== "compose") {
+    setPhase("compose");
+    setTypedDone(false);
+    setLineIndex(0);
+  }, [replayKey]);
+
+  useEffect(() => {
+    if (!isActive || !typedDone || phase !== "compose") {
       return;
     }
 
@@ -73,10 +89,10 @@ export function DraftFollowupIllustration() {
     return () => {
       window.clearTimeout(sendTimer);
     };
-  }, [typedDone, phase]);
+  }, [typedDone, phase, isActive]);
 
   useEffect(() => {
-    if (phase !== "sending") {
+    if (!isActive || phase !== "sending") {
       return;
     }
 
@@ -87,10 +103,10 @@ export function DraftFollowupIllustration() {
     return () => {
       window.clearTimeout(transitionTimer);
     };
-  }, [phase]);
+  }, [phase, isActive]);
 
   useEffect(() => {
-    if (phase !== "processing") {
+    if (!isActive || phase !== "processing") {
       return;
     }
 
@@ -101,13 +117,56 @@ export function DraftFollowupIllustration() {
     return () => {
       window.clearInterval(interval);
     };
-  }, [phase]);
+  }, [phase, isActive]);
+
+  useEffect(() => {
+    if (!isActive || phase !== "processing") {
+      return;
+    }
+
+    const completionTimer = window.setTimeout(() => {
+      onSequenceComplete?.();
+    }, 5200);
+
+    return () => {
+      window.clearTimeout(completionTimer);
+    };
+  }, [isActive, phase, onSequenceComplete]);
 
   const handleTypingComplete = useCallback(() => {
+    if (!isActive) {
+      return;
+    }
+
     setTypedDone(true);
-  }, []);
+  }, [isActive]);
 
   const activeLine = STATUS_LINES[lineIndex];
+
+  if (!isActive) {
+    return (
+      <div className="h-full w-full p-3 flex-1 md:flex-none">
+        <div className="h-full w-full">
+          <div className="flex h-full w-full items-center justify-center">
+            <div className="w-full">
+              <PromptInput
+                workspaceIconSrc="/icons/notion.svg"
+                workspaceIconAlt="Workspace"
+                title="Working with Notion & HubSpot"
+                subtitle="Focused on Acme follow-up"
+                stopLabel="Stop"
+                sendState="send"
+              >
+                <p className="text-[13px] leading-5 font-normal text-foreground/80">
+                  {PROMPT_TEXT}
+                </p>
+              </PromptInput>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full w-full p-3 flex-1 md:flex-none">

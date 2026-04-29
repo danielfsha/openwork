@@ -2,6 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 
+type TaskSchedulingIllustrationProps = {
+  isActive?: boolean;
+  replayKey?: string | number;
+  onSequenceComplete?: () => void;
+};
+
 type LaneConfig = {
   id: string;
   label: string;
@@ -74,7 +80,11 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-export function TaskSchedulingIllustration() {
+export function TaskSchedulingIllustration({
+  isActive = true,
+  replayKey = 0,
+  onSequenceComplete,
+}: TaskSchedulingIllustrationProps) {
   const timelineRef = useRef<HTMLDivElement>(null);
   const laneDragRef = useRef<{ laneId: string; edge: "start" | "end" } | null>(
     null,
@@ -92,6 +102,20 @@ export function TaskSchedulingIllustration() {
   );
 
   const timelineWidth = monthWidth * months.length;
+
+  useEffect(() => {
+    if (!isActive) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      onSequenceComplete?.();
+    }, 5000);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [isActive, onSequenceComplete, replayKey]);
 
   useEffect(() => {
     function monthFromClientX(clientX: number) {
@@ -201,7 +225,7 @@ export function TaskSchedulingIllustration() {
             <div className="absolute inset-y-0 left-0 right-0 grid grid-cols-8">
               {months.map((month, index) => (
                 <div key={month} className="relative">
-                  <div className="absolute left-0 right-0 top-0 h-7 border-b border-foreground/10 px-2 text-[8px] text-muted-foreground">
+                  <div className="absolute left-0 right-0 top-0 h-7 border-b border-foreground/10 px-2 -translate-y-1 text-muted-foreground">
                     <span className="inline-block pt-2 tracking-wide">
                       {month}
                     </span>
@@ -232,11 +256,6 @@ export function TaskSchedulingIllustration() {
                       {lane.icon}
                     </span>
                     <span className="tracking-[-0.01em]">{lane.label}</span>
-                    <span
-                      className={`inline-flex h-6 w-6 items-center justify-center rounded-full ${lane.statusBg} ${lane.accent}`}
-                    >
-                      <span className="text-[11px]">⌁</span>
-                    </span>
                   </div>
 
                   <div className="group relative h-8 rounded-[4px] border border-foreground/14 bg-background/70">

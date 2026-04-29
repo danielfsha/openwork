@@ -85,6 +85,7 @@ type DataAnalysisAiTableProps = {
   rows?: DataAnalysisRow[];
   typingRowId?: string;
   replayKey?: string | number;
+  disableAnimation?: boolean;
   onTypingEnd?: (rowId: string) => void;
 };
 
@@ -104,11 +105,13 @@ function AnimatedRow({
   row,
   isActive,
   replayKey,
+  disableAnimation,
   onTypingEnd,
 }: {
   row: DataAnalysisRow;
   isActive: boolean;
   replayKey: string | number;
+  disableAnimation: boolean;
   onTypingEnd?: (rowId: string) => void;
 }) {
   const [phase, setPhase] = useState<TypingPhase>("typing");
@@ -122,6 +125,11 @@ function AnimatedRow({
   }, [onTypingEnd]);
 
   useEffect(() => {
+    if (disableAnimation) {
+      setPhase("revealed");
+      return;
+    }
+
     if (!isActive) {
       setPhase("revealed");
       return;
@@ -135,10 +143,10 @@ function AnimatedRow({
         window.clearTimeout(revealTimeoutRef.current);
       }
     };
-  }, [row.id, isActive, replayKey]);
+  }, [row.id, isActive, replayKey, disableAnimation]);
 
   function handleTypingComplete() {
-    if (!isActive || phase !== "typing") {
+    if (disableAnimation || !isActive || phase !== "typing") {
       return;
     }
 
@@ -164,7 +172,7 @@ function AnimatedRow({
       {/* Name */}
       <TableCell className="h-8 min-h-8 max-h-8 border-l border-foreground/10 px-2 py-1 align-middle">
         <span className="inline-flex items-center text-foreground/90 leading-none">
-          {isActive && phase === "typing" ? (
+          {!disableAnimation && isActive && phase === "typing" ? (
             <Typewriter
               text={row.name}
               speedMs={88}
@@ -183,94 +191,117 @@ function AnimatedRow({
         colSpan={2}
         className="relative h-8 min-h-8 max-h-8 border-l border-foreground/10 px-0 py-0 align-middle"
       >
-        {/* THIS is the correct overlay:
+        {disableAnimation ? (
+          <div className="grid h-full grid-cols-[84px_112px] items-center px-2">
+            <div>
+              <span
+                className={cn(
+                  "inline-flex h-4 items-center rounded-full px-1.5 py-0 text-[9px] leading-none",
+                  teamPillClass(row.teamTone),
+                )}
+              >
+                {row.team}
+              </span>
+            </div>
+
+            <div className="text-right">
+              <span className="inline-block max-w-[96px] truncate leading-none text-muted-foreground">
+                {row.email}
+              </span>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* THIS is the correct overlay:
             starts top-left
             full row height
             full width of BOTH columns
         */}
-        <AnimatePresence initial={false}>
-          {isActive && phase === "highlight" && (
-            <motion.div
-              key="highlight-overlay"
-              className="pointer-events-none absolute inset-0 z-20 border border-[#f97316]"
-              style={{
-                backgroundImage:
-                  "linear-gradient(90deg, rgba(249,115,22,0) 0%, rgba(249,115,22,0.40) 52%, rgba(249,115,22,0) 100%)",
-                backgroundSize: "200% 100%",
-              }}
-              animate={{
-                opacity: 1,
-                backgroundPositionX: ["0%", "100%"],
-              }}
-              transition={{
-                duration: 3,
-                ease: "linear",
-              }}
-            />
-          )}
-        </AnimatePresence>
-
-        <div className="relative z-10 grid h-full grid-cols-[84px_112px] items-center px-2">
-          {/* TEAM */}
-          <div>
-            <AnimatePresence mode="wait" initial={false}>
-              {isActive && phase !== "revealed" ? (
+            <AnimatePresence initial={false}>
+              {isActive && phase === "highlight" && (
                 <motion.div
-                  key="team-loading"
-                  initial={{ opacity: 0, filter: "blur(6px)" }}
-                  animate={{ opacity: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, filter: "blur(6px)" }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <Skeleton className="h-4 w-14 rounded-full" />
-                </motion.div>
-              ) : (
-                <motion.span
-                  key="team-value"
-                  className={cn(
-                    "inline-flex h-4 items-center rounded-full px-1.5 py-0 text-[9px] leading-none",
-                    teamPillClass(row.teamTone),
+                  key="highlight-overlay"
+                  className="pointer-events-none absolute inset-0 z-20 border border-[#f97316]"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(90deg, rgba(249,115,22,0) 0%, rgba(249,115,22,0.40) 52%, rgba(249,115,22,0) 100%)",
+                    backgroundSize: "200% 100%",
+                  }}
+                  animate={{
+                    opacity: 1,
+                    backgroundPositionX: ["0%", "100%"],
+                  }}
+                  transition={{
+                    duration: 3,
+                    ease: "linear",
+                  }}
+                />
+              )}
+            </AnimatePresence>
+
+            <div className="relative z-10 grid h-full grid-cols-[84px_112px] items-center px-2">
+              {/* TEAM */}
+              <div>
+                <AnimatePresence mode="wait" initial={false}>
+                  {isActive && phase !== "revealed" ? (
+                    <motion.div
+                      key="team-loading"
+                      initial={{ opacity: 0, filter: "blur(6px)" }}
+                      animate={{ opacity: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, filter: "blur(6px)" }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <Skeleton className="h-4 w-14 rounded-full" />
+                    </motion.div>
+                  ) : (
+                    <motion.span
+                      key="team-value"
+                      className={cn(
+                        "inline-flex h-4 items-center rounded-full px-1.5 py-0 text-[9px] leading-none",
+                        teamPillClass(row.teamTone),
+                      )}
+                      initial={{ opacity: 0, filter: "blur(8px)" }}
+                      animate={{ opacity: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      {row.team}
+                    </motion.span>
                   )}
-                  initial={{ opacity: 0, filter: "blur(8px)" }}
-                  animate={{ opacity: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  {row.team}
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </div>
+                </AnimatePresence>
+              </div>
 
-          {/* EMAIL */}
-          <div className="text-right">
-            <AnimatePresence mode="wait" initial={false}>
-              {isActive && phase !== "revealed" ? (
-                <motion.div
-                  key="email-loading"
-                  className="flex justify-end"
-                  initial={{ opacity: 0, filter: "blur(6px)" }}
-                  animate={{ opacity: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, filter: "blur(6px)" }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <Skeleton className="h-4 w-20 rounded-none" />
-                </motion.div>
-              ) : (
-                <motion.span
-                  key="email-value"
-                  className="inline-block max-w-[96px] truncate leading-none text-muted-foreground"
-                  initial={{ opacity: 0, filter: "blur(8px)" }}
-                  animate={{ opacity: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  {row.email}
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
+              {/* EMAIL */}
+              <div className="text-right">
+                <AnimatePresence mode="wait" initial={false}>
+                  {isActive && phase !== "revealed" ? (
+                    <motion.div
+                      key="email-loading"
+                      className="flex justify-end"
+                      initial={{ opacity: 0, filter: "blur(6px)" }}
+                      animate={{ opacity: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, filter: "blur(6px)" }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <Skeleton className="h-4 w-20 rounded-none" />
+                    </motion.div>
+                  ) : (
+                    <motion.span
+                      key="email-value"
+                      className="inline-block max-w-[96px] truncate leading-none text-muted-foreground"
+                      initial={{ opacity: 0, filter: "blur(8px)" }}
+                      animate={{ opacity: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      {row.email}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </>
+        )}
       </TableCell>
     </>
   );
@@ -280,11 +311,13 @@ export function DataAnalysisAiTable({
   rows = defaultDataAnalysisRows,
   typingRowId = "row-mark",
   replayKey = 0,
+  disableAnimation = false,
   onTypingEnd,
 }: DataAnalysisAiTableProps) {
   const activeRow = useMemo(
-    () => rows.find((row) => row.id === typingRowId),
-    [rows, typingRowId],
+    () =>
+      disableAnimation ? undefined : rows.find((row) => row.id === typingRowId),
+    [rows, typingRowId, disableAnimation],
   );
 
   return (
@@ -328,6 +361,7 @@ export function DataAnalysisAiTable({
                   row={row}
                   isActive={isActive}
                   replayKey={replayKey}
+                  disableAnimation={disableAnimation}
                   onTypingEnd={onTypingEnd}
                 />
               </TableRow>

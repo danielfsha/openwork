@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
+import { useAnimate } from "motion/react";
 import { cn } from "@/lib/utils";
 import {
   Card,
@@ -12,6 +13,7 @@ import {
 import { DraftFollowupIllustration } from "./feature-draft-followup-illustration";
 import { DataAnalysisIllustration } from "./feature-data-analysis-illustration";
 import { TaskSchedulingIllustration } from "./feature-task-scheduling-illustration";
+import { useFeatureSequence } from "./use-feature-sequence";
 
 const featureCards = [
   {
@@ -37,22 +39,48 @@ const featureCards = [
   },
 ] as const;
 
-const ROTATE_INTERVAL_MS = 2600;
-
 function FeatureMediaFrame({ children }: { children: React.ReactNode }) {
   return <div className="h-full overflow-hidden px-2 pt-4">{children}</div>;
 }
 
-function FeaturePreview({ id }: { id: string }) {
+function FeaturePreview({
+  id,
+  isActive,
+  replayKey,
+  onSequenceComplete,
+}: {
+  id: string;
+  isActive: boolean;
+  replayKey: string | number;
+  onSequenceComplete: () => void;
+}) {
   if (id === "01") {
-    return <DraftFollowupIllustration />;
+    return (
+      <DraftFollowupIllustration
+        isActive={isActive}
+        replayKey={replayKey}
+        onSequenceComplete={onSequenceComplete}
+      />
+    );
   }
 
   if (id === "02") {
-    return <DataAnalysisIllustration />;
+    return (
+      <DataAnalysisIllustration
+        isActive={isActive}
+        replayKey={replayKey}
+        onSequenceComplete={onSequenceComplete}
+      />
+    );
   }
 
-  return <TaskSchedulingIllustration />;
+  return (
+    <TaskSchedulingIllustration
+      isActive={isActive}
+      replayKey={replayKey}
+      onSequenceComplete={onSequenceComplete}
+    />
+  );
 }
 
 function HighlightChip({
@@ -65,7 +93,7 @@ function HighlightChip({
   isActive: boolean;
 }) {
   return (
-    <span className="inline-flex items-start gap-[2px]">
+    <span className="inline-flex items-start gap-[2px]" data-chip-id={id}>
       <span
         className={cn(
           "inline-flex items-center rounded-md px-2 py-[1px] text-[0.92em] leading-[1.05] font-medium transition-all duration-300",
@@ -90,20 +118,49 @@ function HighlightChip({
 }
 
 export function LandingFeatures() {
-  const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const [scope, animate] = useAnimate();
+  const { activeIndex: activeCardIndex, activationId, completeActive } =
+    useFeatureSequence({
+      count: featureCards.length,
+      pauseMs: 900,
+    });
+
+  const handleCardComplete = useCallback(
+    (index: number) => {
+      completeActive(index);
+    },
+    [completeActive],
+  );
 
   useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setActiveCardIndex((current) => (current + 1) % featureCards.length);
-    }, ROTATE_INTERVAL_MS);
+    const activeId = featureCards[activeCardIndex]?.id;
 
-    return () => window.clearInterval(intervalId);
-  }, []);
+    if (!activeId) {
+      return;
+    }
+
+    animate(
+      `[data-chip-id='${activeId}']`,
+      {
+        scale: [0.96, 1.06, 1],
+        opacity: [0.72, 1, 1],
+        filter: ["blur(1px)", "blur(0px)"],
+      },
+      {
+        duration: 0.52,
+        ease: "easeOut",
+      },
+    );
+  }, [activeCardIndex, animate]);
+
 
   return (
     <section className="py-16 md:py-24">
       <div className="mx-auto">
-        <h2 className="max-w-4xl px-4 lg:px-12 text-[2rem] font-normal leading-[1.24] tracking-tight text-foreground">
+        <h2
+          ref={scope}
+          className="max-w-4xl px-4 lg:px-12 text-[2rem] font-normal leading-[1.24] tracking-tight text-foreground"
+        >
           <span className="">OpenWork </span>
           <HighlightChip
             label="drafts outreach"
@@ -157,7 +214,12 @@ export function LandingFeatures() {
 
                 <CardContent className="flex-1 px-0 pb-0 pt-0">
                   <FeatureMediaFrame>
-                    <FeaturePreview id={card.id} />
+                    <FeaturePreview
+                      id={card.id}
+                      isActive={isActive}
+                      replayKey={`${card.id}-${activationId}`}
+                      onSequenceComplete={() => handleCardComplete(index)}
+                    />
                   </FeatureMediaFrame>
                 </CardContent>
               </Card>
