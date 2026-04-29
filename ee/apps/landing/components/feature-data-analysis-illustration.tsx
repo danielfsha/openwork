@@ -14,11 +14,10 @@ export function DataAnalysisIllustration({
 }: DataAnalysisIllustrationProps) {
   return (
     <div className="h-full p-3">
-      <div className="rounded-md border border-foreground/15 bg-background/50 p-1 shadow-sm">
+      <div className="rounded-md border border-foreground/15 bg-[#f7f7f8] p-1 shadow-sm dark:bg-[#18181b]">
         <DataAnalysisAiTable
           rows={defaultDataAnalysisRows}
           typingRowId="row-mark"
-          aiSuggestionRowId="row-susan"
           onTypingEnd={() => onTypingEnd?.()}
         />
       </div>

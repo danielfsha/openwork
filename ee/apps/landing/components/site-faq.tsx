@@ -81,26 +81,26 @@ const faqData = [
       },
     ],
   },
-  {
-    category: "Pricing & Billing",
-    questions: [
-      {
-        question: "Is OpenWork free?",
-        answer:
-          "The desktop app and core features are free and open-source; Cloud and Enterprise have paid plans.",
-      },
-      {
-        question: "What are the pricing options?",
-        answer:
-          "Free desktop download; Cloud for shared workspaces; Enterprise for custom deployments—see pricing page.",
-      },
-      {
-        question: "Is there enterprise support?",
-        answer:
-          "Yes, Enterprise offers private servers, no telemetry, and dedicated support; contact sales.",
-      },
-    ],
-  },
+  // {
+  //   category: "Pricing & Billing",
+  //   questions: [
+  //     {
+  //       question: "Is OpenWork free?",
+  //       answer:
+  //         "The desktop app and core features are free and open-source; Cloud and Enterprise have paid plans.",
+  //     },
+  //     {
+  //       question: "What are the pricing options?",
+  //       answer:
+  //         "Free desktop download; Cloud for shared workspaces; Enterprise for custom deployments—see pricing page.",
+  //     },
+  //     {
+  //       question: "Is there enterprise support?",
+  //       answer:
+  //         "Yes, Enterprise offers private servers, no telemetry, and dedicated support; contact sales.",
+  //     },
+  //   ],
+  // },
 ];
 
 export default function SiteFAQ() {

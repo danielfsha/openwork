@@ -31,6 +31,20 @@ export type DataAnalysisRow = {
 
 export const defaultDataAnalysisRows: DataAnalysisRow[] = [
   {
+    id: "row-benjamin",
+    name: "Benjamin",
+    team: "Founder",
+    email: "benjamin@openwork.com",
+    teamTone: "info",
+  },
+  {
+    id: "row-daniel",
+    name: "Daniel",
+    team: "Development",
+    email: "daniel@openwork.com",
+    teamTone: "info",
+  },
+  {
     id: "row-jordan",
     name: "Jordan",
     team: "HR",
@@ -61,7 +75,7 @@ export const defaultDataAnalysisRows: DataAnalysisRow[] = [
     id: "row-priya",
     name: "Priya",
     team: "Sales",
-    email: "priya.pipeline@gmail.com",
+    email: "priya.pipeline@openwork.com",
     teamTone: "info",
   },
 ];
@@ -75,14 +89,14 @@ type DataAnalysisAiTableProps = {
 
 function teamPillClass(tone?: TeamTone) {
   if (tone === "warning") {
-    return "bg-[#f97316]/20 text-[#f97316]";
+    return "bg-[#fde6d8] text-[#c2410c] dark:bg-[#3a2318] dark:text-[#fdba74]";
   }
 
   if (tone === "info") {
-    return "bg-blue-500/15 text-blue-600 dark:text-blue-300";
+    return "bg-[#dbeafe] text-[#1d4ed8] dark:bg-[#1e293b] dark:text-[#93c5fd]";
   }
 
-  return "bg-foreground/10 text-foreground/80";
+  return "bg-[#eceef1] text-foreground/80 dark:bg-[#232326] dark:text-foreground/85";
 }
 
 function AnimatedRow({
@@ -208,13 +222,13 @@ function AnimatedRow({
                   exit={{ opacity: 0, filter: "blur(6px)" }}
                   transition={{ duration: 0.25 }}
                 >
-                  <Skeleton className="h-4 w-14 rounded-none" />
+                  <Skeleton className="h-4 w-14 rounded-full" />
                 </motion.div>
               ) : (
                 <motion.span
                   key="team-value"
                   className={cn(
-                    "inline-flex h-4 items-center rounded-none px-1.5 py-0 text-[9px] leading-none",
+                    "inline-flex h-4 items-center rounded-full px-1.5 py-0 text-[9px] leading-none",
                     teamPillClass(row.teamTone),
                   )}
                   initial={{ opacity: 0, filter: "blur(8px)" }}
@@ -274,10 +288,10 @@ export function DataAnalysisAiTable({
   );
 
   return (
-    <div className="relative overflow-hidden rounded-none border border-foreground/10">
+    <div className="relative overflow-hidden rounded-none border border-foreground/10 bg-[#fcfcfd] dark:bg-[#111214]">
       <Table className="w-full table-fixed">
         <TableHeader>
-          <TableRow className="h-8 min-h-8 max-h-8 border-b border-foreground/10 hover:bg-transparent">
+          <TableRow className="h-8 min-h-8 max-h-8 border-b border-foreground/10 bg-[#f1f3f5] hover:bg-[#f1f3f5] dark:bg-[#191a1d] dark:hover:bg-[#191a1d]">
             <TableHead className="h-8 w-8 px-2 text-center">
               <Checkbox />
             </TableHead>
@@ -305,8 +319,8 @@ export function DataAnalysisAiTable({
               <TableRow
                 key={row.id}
                 className={cn(
-                  "h-8 min-h-8 max-h-8",
-                  index % 2 !== 0 && "bg-foreground/[0.03]",
+                  "h-8 min-h-8 max-h-8 bg-[#fcfcfd] dark:bg-[#111214]",
+                  index % 2 !== 0 && "bg-[#f3f4f6] dark:bg-[#18181b]",
                   !isLast && "border-b border-foreground/10",
                 )}
               >
