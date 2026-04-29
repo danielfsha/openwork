@@ -1,9 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { PromptInput } from "@/components/ui/prompt-input";
 import { TextShimmer } from "./ui/text-shimmer";
+import { Typewriter } from "./ui/typewriter";
+
+const PROMPT_TEXT =
+  "Draft follow-up for Acme Corp. Turn Notion MCP context into personalized outreach, then push the final result into your CRM.";
 
 type StatusLine = {
   prefix: string;
@@ -49,64 +54,137 @@ const STATUS_LINES = [
   },
 ] as const satisfies readonly StatusLine[];
 
+type ComposerPhase = "compose" | "sending" | "processing";
+
 export function DraftFollowupIllustration() {
+  const [phase, setPhase] = useState<ComposerPhase>("compose");
+  const [typedDone, setTypedDone] = useState(false);
   const [lineIndex, setLineIndex] = useState(0);
 
   useEffect(() => {
+    if (!typedDone || phase !== "compose") {
+      return;
+    }
+
+    const sendTimer = window.setTimeout(() => {
+      setPhase("sending");
+    }, 650);
+
+    return () => {
+      window.clearTimeout(sendTimer);
+    };
+  }, [typedDone, phase]);
+
+  useEffect(() => {
+    if (phase !== "sending") {
+      return;
+    }
+
+    const transitionTimer = window.setTimeout(() => {
+      setPhase("processing");
+    }, 700);
+
+    return () => {
+      window.clearTimeout(transitionTimer);
+    };
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase !== "processing") {
+      return;
+    }
+
     const interval = window.setInterval(() => {
       setLineIndex((current) => (current + 1) % STATUS_LINES.length);
-    }, 2000); // changes ONLY every 2s
+    }, 4800);
 
     return () => {
       window.clearInterval(interval);
     };
+  }, [phase]);
+
+  const handleTypingComplete = useCallback(() => {
+    setTypedDone(true);
   }, []);
 
   const activeLine = STATUS_LINES[lineIndex];
 
   return (
-    <div className="h-full p-3">
-      <div className="h-full rounded-md border border-foreground/15 bg-[rgba(255,255,255,0.72)] p-1 shadow-sm dark:bg-[rgba(18,18,18,0.78)]">
-        <div className="relative flex h-full items-center justify-center overflow-hidden rounded-[6px] border border-foreground/10 bg-[rgba(248,250,252,0.9)] p-3 dark:bg-[rgba(14,14,14,0.88)]">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={lineIndex}
-              className={`inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.01em] ${activeLine.tone}`}
-              initial={{
-                opacity: 0,
-                y: 6,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              exit={{
-                opacity: 0,
-                y: -6,
-              }}
-              transition={{
-                duration: 0.4, // fast transition only when changing
-                ease: "easeOut",
-              }}
+    <div className="h-full w-full p-3 flex-1 md:flex-none">
+      <div className="h-full w-full">
+        <AnimatePresence mode="wait">
+          {phase !== "processing" ? (
+            <div
+              key="composer"
+              className="flex h-full w-full items-center justify-center"
             >
-              <span className="text-muted-foreground">
-                <TextShimmer duration={2.5}>{activeLine.prefix}</TextShimmer>
-              </span>
+              <div className="w-full">
+                <PromptInput
+                  workspaceIconSrc="/icons/notion.svg"
+                  workspaceIconAlt="Workspace"
+                  title="Working with Notion & HubSpot"
+                  subtitle="Focused on Acme follow-up"
+                  stopLabel="Stop"
+                  sendState={phase === "sending" ? "stop" : "send"}
+                >
+                  <Typewriter
+                    text={PROMPT_TEXT}
+                    speedMs={19}
+                    startDelayMs={260}
+                    showCaret={phase !== "sending"}
+                    onComplete={handleTypingComplete}
+                    className="text-[13px] leading-5 font-normal text-foreground/80"
+                  />
+                </PromptInput>
+              </div>
+            </div>
+          ) : (
+            <motion.div
+              key="processing"
+              className="flex h-full w-full items-center justify-center"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.55, ease: "easeOut" }}
+            >
+              <div className="relative h-full rounded-md border border-foreground/15 bg-[rgba(255,255,255,0.72)] p-1 dark:bg-[rgba(18,18,18,0.78)] w-full">
+                <div className="relative h-full overflow-x-auto overflow-y-hidden rounded-[6px] border border-foreground/10 bg-[rgba(248,250,252,0.9)] w-full dark:bg-[rgba(14,14,14,0.88)] flex items-center justify-center">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={lineIndex}
+                      className={`inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.01em] ${activeLine.tone}`}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 0.6, ease: "easeOut" }}
+                    >
+                      <TextShimmer
+                        duration={2.5}
+                        className="[--base-color:#71717a] [--base-gradient-color:#ffffff]"
+                      >
+                        {activeLine.prefix}
+                      </TextShimmer>
 
-              <span className="inline-flex size-4 items-center justify-center overflow-hidden rounded-[4px] bg-[rgba(255,255,255,0.9)] dark:bg-[rgba(20,20,20,0.92)]">
-                <Image
-                  src={activeLine.integration.iconSrc}
-                  alt={activeLine.integration.name}
-                  width={16}
-                  height={16}
-                  className="size-4"
-                />
-              </span>
+                      <span className="inline-flex size-4 items-center justify-center overflow-hidden rounded-[4px]">
+                        <Image
+                          src={activeLine.integration.iconSrc}
+                          alt={activeLine.integration.name}
+                          width={16}
+                          height={16}
+                          className="size-4"
+                        />
+                      </span>
 
-              {activeLine.integration.name}
+                      <span className="text-foreground/90">
+                        {activeLine.integration.name}
+                      </span>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </div>
             </motion.div>
-          </AnimatePresence>
-        </div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

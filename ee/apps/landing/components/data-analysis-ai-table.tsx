@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, animate, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Typewriter } from "@/components/ui/typewriter";
 import { cn } from "@/lib/utils";
 import {
   Table,
@@ -110,10 +111,11 @@ function AnimatedRow({
   replayKey: string | number;
   onTypingEnd?: (rowId: string) => void;
 }) {
-  const [typedName, setTypedName] = useState("");
   const [phase, setPhase] = useState<TypingPhase>("typing");
+  const [typeReplayKey, setTypeReplayKey] = useState(0);
 
   const callbackRef = useRef(onTypingEnd);
+  const revealTimeoutRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     callbackRef.current = onTypingEnd;
@@ -121,44 +123,36 @@ function AnimatedRow({
 
   useEffect(() => {
     if (!isActive) {
-      setTypedName(row.name);
       setPhase("revealed");
       return;
     }
 
-    setTypedName("");
     setPhase("typing");
-
-    let revealTimeout: number | undefined;
-
-    const controls = animate(0, row.name.length, {
-      duration: 1.2,
-      ease: "linear",
-      onUpdate: (latest) => {
-        const nextLength = Math.min(row.name.length, Math.floor(latest));
-
-        setTypedName(row.name.slice(0, nextLength));
-      },
-      onComplete: () => {
-        setTypedName(row.name);
-        setPhase("highlight");
-
-        callbackRef.current?.(row.id);
-
-        revealTimeout = window.setTimeout(() => {
-          setPhase("revealed");
-        }, PHASE_DELAY_MS);
-      },
-    });
+    setTypeReplayKey((current) => current + 1);
 
     return () => {
-      controls.stop();
-
-      if (revealTimeout) {
-        window.clearTimeout(revealTimeout);
+      if (revealTimeoutRef.current) {
+        window.clearTimeout(revealTimeoutRef.current);
       }
     };
-  }, [row.id, row.name, isActive, replayKey]);
+  }, [row.id, isActive, replayKey]);
+
+  function handleTypingComplete() {
+    if (!isActive || phase !== "typing") {
+      return;
+    }
+
+    setPhase("highlight");
+    callbackRef.current?.(row.id);
+
+    if (revealTimeoutRef.current) {
+      window.clearTimeout(revealTimeoutRef.current);
+    }
+
+    revealTimeoutRef.current = window.setTimeout(() => {
+      setPhase("revealed");
+    }, PHASE_DELAY_MS);
+  }
 
   return (
     <>
@@ -170,10 +164,16 @@ function AnimatedRow({
       {/* Name */}
       <TableCell className="h-8 min-h-8 max-h-8 border-l border-foreground/10 px-2 py-1 align-middle">
         <span className="inline-flex items-center text-foreground/90 leading-none">
-          {typedName}
-
-          {isActive && phase === "typing" && (
-            <span className="ml-0.5 h-3 w-px animate-pulse bg-foreground/60" />
+          {isActive && phase === "typing" ? (
+            <Typewriter
+              text={row.name}
+              speedMs={88}
+              replayKey={`${row.id}-${replayKey}-${typeReplayKey}`}
+              onComplete={handleTypingComplete}
+              className="text-foreground/90"
+            />
+          ) : (
+            row.name
           )}
         </span>
       </TableCell>
