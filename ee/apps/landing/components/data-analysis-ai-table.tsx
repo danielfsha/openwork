@@ -32,52 +32,53 @@ export type DataAnalysisRow = {
 
 export const defaultDataAnalysisRows: DataAnalysisRow[] = [
   {
-    id: "row-benjamin",
-    name: "Benjamin",
-    team: "Founder",
-    email: "benjamin@openwork.com",
+    id: "row-revenue",
+    name: "Q2 Revenue",
+    team: "P&L",
+    email: "$1,284,500",
     teamTone: "info",
   },
   {
-    id: "row-daniel",
-    name: "Daniel",
-    team: "Development",
-    email: "daniel@openwork.com",
+    id: "row-cogs",
+    name: "Cost of Goods",
+    team: "P&L",
+    email: "$462,300",
     teamTone: "info",
   },
   {
-    id: "row-jordan",
-    name: "Jordan",
-    team: "HR",
-    email: "j.parker@openwork.dev",
+    id: "row-gross-profit",
+    name: "Gross Profit",
+    team: "P&L",
+    email: "$822,200",
+    teamTone: "info",
   },
   {
-    id: "row-susan",
-    name: "Susan",
-    team: "Marketing",
-    email: "s.johns@openwork.dev",
+    id: "row-opex",
+    name: "Operating Expense",
+    team: "OPEX",
+    email: "$318,900",
     checked: true,
     teamTone: "warning",
   },
   {
-    id: "row-mark",
-    name: "Mark",
-    team: "Design",
-    email: "mark.d@openwork.com",
+    id: "row-operating-income",
+    name: "Operating Income",
+    team: "P&L",
+    email: "$503,300",
     teamTone: "info",
   },
   {
-    id: "row-leo",
-    name: "Leo",
-    team: "Operations",
-    email: "leo.ops@openwork.dev",
+    id: "row-adjustments",
+    name: "Adjustments",
+    team: "Other",
+    email: "$125,100",
   },
   {
-    id: "row-priya",
-    name: "Priya",
-    team: "Sales",
-    email: "priya.pipeline@openwork.com",
-    teamTone: "info",
+    id: "row-total",
+    name: "Total",
+    team: "Summary",
+    email: "$378,200",
+    teamTone: "warning",
   },
 ];
 
@@ -99,6 +100,32 @@ function teamPillClass(tone?: TeamTone) {
   }
 
   return "bg-[#eceef1] text-foreground/80 dark:bg-[#232326] dark:text-foreground/85";
+}
+
+function ledgerPillClass(ledger: string, tone?: TeamTone) {
+  const normalized = ledger.toLowerCase();
+
+  if (normalized === "sales") {
+    return "bg-[#fee2e2] text-[#b91c1c] dark:bg-[#3f1d1d] dark:text-[#fca5a5]";
+  }
+
+  if (normalized === "summary") {
+    return "bg-[#fef3c7] text-[#92400e] dark:bg-[#3a2f16] dark:text-[#fcd34d]";
+  }
+
+  if (normalized === "opex") {
+    return "bg-[#ffedd5] text-[#c2410c] dark:bg-[#3a2417] dark:text-[#fdba74]";
+  }
+
+  if (normalized === "p&l" || normalized === "pnl") {
+    return "bg-[#dbeafe] text-[#1d4ed8] dark:bg-[#1e293b] dark:text-[#93c5fd]";
+  }
+
+  if (normalized === "other") {
+    return "bg-[#e0e7ff] text-[#4338ca] dark:bg-[#1f2440] dark:text-[#a5b4fc]";
+  }
+
+  return teamPillClass(tone);
 }
 
 function AnimatedRow({
@@ -171,14 +198,14 @@ function AnimatedRow({
 
       {/* Name */}
       <TableCell className="h-8 min-h-8 max-h-8 border-l border-foreground/10 px-2 py-1 align-middle">
-        <span className="inline-flex items-center text-foreground/90 leading-none">
+        <span className="inline-block w-full truncate align-middle text-foreground/90 leading-none">
           {!disableAnimation && isActive && phase === "typing" ? (
             <Typewriter
               text={row.name}
               speedMs={88}
               replayKey={`${row.id}-${replayKey}-${typeReplayKey}`}
               onComplete={handleTypingComplete}
-              className="text-foreground/90"
+              className="block w-full truncate text-foreground/90"
             />
           ) : (
             row.name
@@ -197,7 +224,7 @@ function AnimatedRow({
               <span
                 className={cn(
                   "inline-flex h-4 items-center rounded-full px-1.5 py-0 text-[9px] leading-none",
-                  teamPillClass(row.teamTone),
+                  ledgerPillClass(row.team, row.teamTone),
                 )}
               >
                 {row.team}
@@ -258,7 +285,7 @@ function AnimatedRow({
                       key="team-value"
                       className={cn(
                         "inline-flex h-4 items-center rounded-full px-1.5 py-0 text-[9px] leading-none",
-                        teamPillClass(row.teamTone),
+                        ledgerPillClass(row.team, row.teamTone),
                       )}
                       initial={{ opacity: 0, filter: "blur(8px)" }}
                       animate={{ opacity: 1, filter: "blur(0px)" }}
@@ -309,7 +336,7 @@ function AnimatedRow({
 
 export function DataAnalysisAiTable({
   rows = defaultDataAnalysisRows,
-  typingRowId = "row-mark",
+  typingRowId = "row-total",
   replayKey = 0,
   disableAnimation = false,
   onTypingEnd,
@@ -321,24 +348,24 @@ export function DataAnalysisAiTable({
   );
 
   return (
-    <div className="relative overflow-hidden rounded-none border border-foreground/10 bg-[#fcfcfd] dark:bg-[#111214]">
-      <Table className="w-full table-fixed">
+    <div className="relative overflow-x-auto overflow-y-hidden rounded-none border border-foreground/10 bg-[#fcfcfd] dark:bg-[#111214]">
+      <Table className="w-full min-w-0 table-fixed">
         <TableHeader>
           <TableRow className="h-8 min-h-8 max-h-8 border-b border-foreground/10 bg-[#f1f3f5] hover:bg-[#f1f3f5] dark:bg-[#191a1d] dark:hover:bg-[#191a1d]">
             <TableHead className="h-8 w-8 px-2 text-center">
               <Checkbox />
             </TableHead>
 
-            <TableHead className="h-8 w-[88px] border-l border-foreground/10 px-2">
-              Name
+            <TableHead className="h-8 w-[44%] border-l border-foreground/10 px-2">
+              Metric
             </TableHead>
 
-            <TableHead className="h-8 w-[84px] border-l border-foreground/10 px-2">
-              Team
+            <TableHead className="h-8 w-[24%] border-l border-foreground/10 px-2">
+              Ledger
             </TableHead>
 
-            <TableHead className="h-8 w-[112px] border-l border-foreground/10 px-3 text-left">
-              Email
+            <TableHead className="h-8 w-[32%] border-l border-foreground/10 px-3 text-right">
+              Value
             </TableHead>
           </TableRow>
         </TableHeader>

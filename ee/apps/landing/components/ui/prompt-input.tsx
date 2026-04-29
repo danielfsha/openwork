@@ -1,13 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import {
-  ArrowUp,
-  Focus,
-  Globe,
-  Plus,
-  SlidersHorizontal,
-} from "lucide-react";
+import { ArrowUp, Focus, Globe, Plus, SlidersHorizontal } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
 import { Button } from "@/components/ui/button";
@@ -56,12 +50,27 @@ export function PromptInput({
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl border border-border bg-card text-sm text-card-foreground shadow-sm",
+        "relative overflow-hidden rounded-3xl border border-border bg-card text-sm text-card-foreground shadow-sm",
         className,
       )}
     >
-      <div className="flex min-h-12 items-center justify-between gap-2 border-b border-border/80 bg-background px-3 py-2">
-        <div className="flex items-center gap-2">
+      <div className="relative flex min-h-12 items-center justify-between gap-2 border m-1 border-border/80 bg-background px-3 py-2 rounded-sm rounded-t-2xl overflow-hidden">
+        {/* shading */}
+        <div
+          className="absolute inset-[0px] rounded-[4px] z-0"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(-45deg, rgba(251,146,60,0.3) 0 1.5px, rgba(249,115,22,0.08) 1.5px 3.5px, transparent 3.5px 5px)",
+            backgroundColor: "rgba(251,146,60,0.08)",
+            boxShadow: "inset 0 0 0 1px rgba(251,146,60,0.12)",
+            WebkitMaskImage:
+              "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.14) 14%, rgba(0,0,0,1) 100%)",
+            maskImage:
+              "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.14) 14%, rgba(0,0,0,1) 100%)",
+          }}
+        />
+
+        <div className="flex items-center gap-2 relative z-10">
           <span className="inline-flex size-7 items-center justify-center overflow-hidden rounded-md border border-border/80 bg-muted/40">
             <Image
               src={workspaceIconSrc}
@@ -77,11 +86,12 @@ export function PromptInput({
           </div>
         </div>
 
+        {/* Stop label button - now above hatching with z-20 */}
         <Button
           type="button"
           variant="outline"
           size="xs"
-          className="rounded-full"
+          className="rounded-full z-20 bg-background/95 backdrop-blur-sm border-border/80"
         >
           {stopLabel}
         </Button>
@@ -96,27 +106,42 @@ export function PromptInput({
         <div className="min-w-0 flex-1 leading-relaxed">{children}</div>
       </div>
 
-      <div className="flex min-h-10 items-center justify-between border-t border-border/80 bg-background px-3 py-2">
-        <div className="inline-flex items-center gap-1.5 text-muted-foreground">
-          <Button type="button" variant="ghost" size="icon-xs" aria-label="Add">
+      {/* bottom */}
+      <div className="flex min-h-10 items-center justify-between border-t border-border/80 bg-background p-1">
+        <div className="inline-flex items-center gap-1 text-muted-foreground">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-lg"
+            aria-label="Add"
+            className="rounded-full"
+          >
             <Plus size={14} />
           </Button>
-          <Button type="button" variant="ghost" size="icon-xs" aria-label="Web">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-lg"
+            aria-label="Web"
+            className="rounded-full"
+          >
             <Globe size={14} />
           </Button>
           <Button
             type="button"
             variant="ghost"
-            size="icon-xs"
+            size="icon-lg"
             aria-label="Focus"
+            className="rounded-full"
           >
             <Focus size={14} />
           </Button>
           <Button
             type="button"
             variant="ghost"
-            size="icon-xs"
+            size="icon-lg"
             aria-label="Settings"
+            className="rounded-full"
           >
             <SlidersHorizontal size={14} />
           </Button>
@@ -125,7 +150,7 @@ export function PromptInput({
         <div>
           <Button
             type="button"
-            size="icon-sm"
+            size="icon-lg"
             aria-label="Send"
             className="rounded-full"
           >

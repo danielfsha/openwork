@@ -29,7 +29,7 @@ export function DataAnalysisIllustration({
       <div className="rounded-md border border-foreground/15 bg-[#f7f7f8] p-1 shadow-sm dark:bg-[#18181b]">
         <DataAnalysisAiTable
           rows={defaultDataAnalysisRows}
-          typingRowId="row-mark"
+          typingRowId="row-total"
           replayKey={replayKey}
           disableAnimation={!isActive}
           onTypingEnd={() => {

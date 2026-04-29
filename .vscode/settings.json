@@ -1,6 +1,7 @@
 {
   "maven.view": "flat",
   "chat.tools.terminal.autoApprove": {
-    "git remote": true
+    "git remote": true,
+    "git -C \"c:\\Users\\ROG\\Desktop\\openwork\"": true
   }
 }

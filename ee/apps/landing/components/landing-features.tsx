@@ -27,7 +27,7 @@ const featureCards = [
     id: "02",
     title: "Data Analysis",
     description:
-      "Work from Excel files or pasted spreadsheets without changing how your team already shares data. ",
+      "Analyze finance sheets from Excel or pasted ledgers to surface revenue, margin, and cash insights instantly.",
     backgroundImage: "/images/gradient-2.jpg",
   },
   {
@@ -40,7 +40,11 @@ const featureCards = [
 ] as const;
 
 function FeatureMediaFrame({ children }: { children: React.ReactNode }) {
-  return <div className="h-full overflow-hidden px-2 pt-4">{children}</div>;
+  return (
+    <div className="h-[260px] overflow-hidden px-2 pt-4 md:h-full">
+      {children}
+    </div>
+  );
 }
 
 function FeaturePreview({
@@ -96,7 +100,7 @@ function HighlightChip({
     <span className="inline-flex items-start gap-[2px]" data-chip-id={id}>
       <span
         className={cn(
-          "inline-flex items-center rounded-md px-2 py-[1px] text-[0.92em] leading-[1.05] font-medium transition-all duration-300",
+          "inline-flex items-center rounded-md px-2 py-[1px] text-[0.92em] leading-[1.05] font-medium",
           isActive
             ? // ? "bg-[#f97316]/20 text-[#f97316]"
               "bg-foreground/10 text-muted-foreground"
@@ -119,11 +123,14 @@ function HighlightChip({
 
 export function LandingFeatures() {
   const [scope, animate] = useAnimate();
-  const { activeIndex: activeCardIndex, activationId, completeActive } =
-    useFeatureSequence({
-      count: featureCards.length,
-      pauseMs: 900,
-    });
+  const {
+    activeIndex: activeCardIndex,
+    activationId,
+    completeActive,
+  } = useFeatureSequence({
+    count: featureCards.length,
+    pauseMs: 900,
+  });
 
   const handleCardComplete = useCallback(
     (index: number) => {
@@ -142,7 +149,6 @@ export function LandingFeatures() {
     animate(
       `[data-chip-id='${activeId}']`,
       {
-        scale: [0.96, 1.06, 1],
         opacity: [0.72, 1, 1],
         filter: ["blur(1px)", "blur(0px)"],
       },
@@ -152,7 +158,6 @@ export function LandingFeatures() {
       },
     );
   }, [activeCardIndex, animate]);
-
 
   return (
     <section className="py-16 md:py-24">
@@ -196,7 +201,7 @@ export function LandingFeatures() {
                 showCorners
                 key={card.id}
                 className={cn(
-                  "h-full min-h-[500px] bg-cover bg-center bg-no-repeat",
+                  "h-full min-h-[420px] bg-cover bg-center bg-no-repeat md:min-h-[500px]",
                 )}
                 style={{ backgroundImage: `url('${card.backgroundImage}')` }}
               >

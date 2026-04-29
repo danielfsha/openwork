@@ -263,12 +263,13 @@ export function TaskSchedulingIllustration({
                       className="absolute inset-[1px] rounded-[4px]"
                       style={{
                         backgroundImage:
-                          "repeating-linear-gradient(-45deg, rgba(249,115,22,0.34) 0 2px, transparent 2px 6px)",
-                        backgroundColor: "rgba(249,115,22,0.08)",
+                          "repeating-linear-gradient(-45deg, rgba(251,146,60,0.84) 0 1.5px, rgba(249,115,22,0.18) 1.5px 3.5px, transparent 3.5px 5px)",
+                        backgroundColor: "rgba(251,146,60,0.18)",
+                        boxShadow: "inset 0 0 0 1px rgba(251,146,60,0.22)",
                         WebkitMaskImage:
-                          "linear-gradient(to right, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.12) 16%, rgba(0,0,0,0.38) 42%, rgba(0,0,0,0.78) 72%, rgba(0,0,0,1) 100%)",
+                          "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.14) 14%, rgba(0,0,0,0.48) 40%, rgba(0,0,0,0.84) 72%, rgba(0,0,0,1) 100%)",
                         maskImage:
-                          "linear-gradient(to right, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.12) 16%, rgba(0,0,0,0.38) 42%, rgba(0,0,0,0.78) 72%, rgba(0,0,0,1) 100%)",
+                          "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.14) 14%, rgba(0,0,0,0.48) 40%, rgba(0,0,0,0.84) 72%, rgba(0,0,0,1) 100%)",
                       }}
                     />
                     <div className="absolute inset-y-[7px] left-2 right-2 rounded-full bg-foreground/[0.04]" />

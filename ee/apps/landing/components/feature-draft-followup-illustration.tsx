@@ -10,6 +10,9 @@ import { Typewriter } from "./ui/typewriter";
 const PROMPT_TEXT =
   "Draft follow-up for Acme Corp. Turn Notion MCP context into personalized outreach, then push the final result into your CRM.";
 
+const PROCESSING_STEP_MS = 1800;
+const PROCESSING_FINAL_HOLD_MS = 1200;
+
 type StatusLine = {
   prefix: string;
   tone: string;
@@ -110,28 +113,23 @@ export function DraftFollowupIllustration({
       return;
     }
 
-    const interval = window.setInterval(() => {
-      setLineIndex((current) => (current + 1) % STATUS_LINES.length);
-    }, 4800);
+    const isLastLine = lineIndex >= STATUS_LINES.length - 1;
+    const timer = window.setTimeout(
+      () => {
+        if (isLastLine) {
+          onSequenceComplete?.();
+          return;
+        }
+
+        setLineIndex((current) => current + 1);
+      },
+      isLastLine ? PROCESSING_FINAL_HOLD_MS : PROCESSING_STEP_MS,
+    );
 
     return () => {
-      window.clearInterval(interval);
+      window.clearTimeout(timer);
     };
-  }, [phase, isActive]);
-
-  useEffect(() => {
-    if (!isActive || phase !== "processing") {
-      return;
-    }
-
-    const completionTimer = window.setTimeout(() => {
-      onSequenceComplete?.();
-    }, 5200);
-
-    return () => {
-      window.clearTimeout(completionTimer);
-    };
-  }, [isActive, phase, onSequenceComplete]);
+  }, [isActive, phase, lineIndex, onSequenceComplete]);
 
   const handleTypingComplete = useCallback(() => {
     if (!isActive) {
@@ -215,7 +213,7 @@ export function DraftFollowupIllustration({
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.6, ease: "easeOut" }}
+                      transition={{ duration: 0.3, ease: "easeOut" }}
                     >
                       <TextShimmer
                         duration={2.5}
