@@ -1,5 +1,6 @@
 "use client";
 import { LandingFeatures } from "@/components/landing-features";
+import { LandingDeveloperSection } from "@/components/landing-developer-section";
 import { SiteNav } from "./site-nav";
 import { SectionWrapper } from "./ui/section-wrapper";
 import { Button } from "./ui/button";
@@ -96,6 +97,8 @@ export function LandingHome(props: Props) {
       <SectionWrapper position="middle">
         <LandingFeatures />
       </SectionWrapper>
+
+      <LandingDeveloperSection />
     </div>
   );
 }

@@ -1,18 +1,27 @@
 "use client";
 
+import { motion } from "framer-motion";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { useMeasure } from "@/lib/use-measure";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
+import {
+  type NavMenuItem,
+  productItems,
+  resourceItems,
+  topLevelNavItems,
+} from "./site-nav-links";
 
 type MobileNavItem = {
   href: string;
   label: string;
-  key: "docs" | "pricing" | "download" | "enterprise" | "cloud";
+  key: "pricing" | "download" | "enterprise" | "cloud";
   newTab?: boolean;
 };
 
-export type SiteNavActiveItem = MobileNavItem["key"] | "home";
+export type SiteNavActiveItem = MobileNavItem["key"] | "docs" | "home";
 
 type SiteNavMobileMenuProps = {
   open: boolean;
@@ -25,12 +34,23 @@ type SiteNavMobileMenuProps = {
   onClose: () => void;
 };
 
-const mobileNavItems: MobileNavItem[] = [
-  { href: "/docs", label: "Docs", key: "docs", newTab: true },
-  { href: "/pricing", label: "Pricing", key: "pricing" },
-  { href: "/download", label: "Desktop", key: "download" },
-  { href: "https://app.openworklabs.com", label: "Cloud", key: "cloud" },
-  { href: "/enterprise", label: "Enterprise", key: "enterprise" },
+type ExpandableGroupProps = {
+  label: string;
+  items: NavMenuItem[];
+  open: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+};
+
+const mobileNavItems: MobileNavItem[] = topLevelNavItems.map((item) => ({
+  href: item.href,
+  label: item.label,
+  key: item.key,
+}));
+
+const expandableGroups = [
+  { key: "product" as const, label: "Product", items: productItems },
+  { key: "resources" as const, label: "Resources", items: resourceItems },
 ];
 
 function opensInNewTab(item: MobileNavItem) {
@@ -39,8 +59,72 @@ function opensInNewTab(item: MobileNavItem) {
 
 function navLinkClass(isActive: boolean) {
   return isActive
-    ? "text-foreground"
-    : "text-muted-foreground transition-colors hover:text-foreground";
+    ? "text-[#111111]"
+    : "text-[#111111] transition-colors hover:text-[#111111]";
+}
+
+function ExpandableGroup({
+  label,
+  items,
+  open,
+  onToggle,
+  onClose,
+}: ExpandableGroupProps) {
+  const [contentRef, bounds] = useMeasure<HTMLDivElement>();
+
+  return (
+    <div className="rounded-xl">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-[#111111]"
+      >
+        <span>{label}</span>
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 text-muted-foreground transition-transform",
+            open ? "rotate-180" : "rotate-0",
+          )}
+        />
+      </button>
+
+      <motion.div
+        initial={false}
+        animate={{ height: open ? bounds.height : 0, opacity: open ? 1 : 0 }}
+        transition={{
+          height: { type: "spring", damping: 30, stiffness: 430, mass: 0.32 },
+          opacity: { duration: 0.04, ease: "easeOut" },
+        }}
+        className="overflow-hidden"
+      >
+        <div ref={contentRef} className="space-y-1 px-2 pb-2">
+          {items.map((item) => {
+            const isExternal =
+              item.external || /^(?:https?:\/\/)/.test(item.href);
+
+            return (
+              <Link
+                key={item.title}
+                href={item.href}
+                {...(isExternal ? { target: "_blank", rel: "noreferrer" } : {})}
+                className="block rounded-lg px-3 py-2"
+                onClick={onClose}
+              >
+                <div className="text-[17px] leading-tight text-[#111111]">
+                  {item.title}
+                </div>
+                {item.description ? (
+                  <p className="mt-1 text-sm leading-snug text-[#111111]">
+                    {item.description}
+                  </p>
+                ) : null}
+              </Link>
+            );
+          })}
+        </div>
+      </motion.div>
+    </div>
+  );
 }
 
 export function SiteNavMobileMenu({
@@ -53,16 +137,43 @@ export function SiteNavMobileMenu({
   primaryExternal,
   onClose,
 }: SiteNavMobileMenuProps) {
+  const [expanded, setExpanded] = useState<
+    Record<"product" | "resources", boolean>
+  >({
+    product: true,
+    resources: false,
+  });
+
   if (!open) {
     return null;
   }
 
   return (
     <div className="fixed inset-0 z-[30] bg-background md:hidden">
-      <div className="mx-auto flex h-dvh w-full max-w-md flex-col px-1 pb-1 pt-[82px]">
+      <div className="mx-auto flex h-dvh w-full max-w-md flex-col px-3 pb-3 pt-[82px]">
         <div className="flex flex-1 flex-col overflow-hidden rounded-[22px] bg-[#f7f7f8]">
-          <div className="flex-1 overflow-y-auto px-4 pt-2">
+          <div className="flex-1 overflow-y-auto p-3">
             <div className="space-y-1 text-[20px] font-medium tracking-tight text-[#111111]">
+              {expandableGroups.map((group) => {
+                const isOpen = expanded[group.key];
+
+                return (
+                  <ExpandableGroup
+                    key={group.key}
+                    label={group.label}
+                    items={group.items}
+                    open={isOpen}
+                    onToggle={() =>
+                      setExpanded((current) => ({
+                        ...current,
+                        [group.key]: !current[group.key],
+                      }))
+                    }
+                    onClose={onClose}
+                  />
+                );
+              })}
+
               {mobileNavItems.map((item) => (
                 <Link
                   key={item.key}
@@ -77,7 +188,7 @@ export function SiteNavMobileMenu({
                   onClick={onClose}
                 >
                   <span>{item.label}</span>
-                  <ChevronRight className="h-4 w-4 text-[#9ca3af]" />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
               ))}
             </div>

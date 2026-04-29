@@ -208,13 +208,13 @@ function AnimatedRow({
                   exit={{ opacity: 0, filter: "blur(6px)" }}
                   transition={{ duration: 0.25 }}
                 >
-                  <Skeleton className="h-4 w-14 rounded-sm" />
+                  <Skeleton className="h-4 w-14 rounded-none" />
                 </motion.div>
               ) : (
                 <motion.span
                   key="team-value"
                   className={cn(
-                    "inline-flex h-4 items-center rounded-full px-1.5 py-0 text-[9px] leading-none",
+                    "inline-flex h-4 items-center rounded-none px-1.5 py-0 text-[9px] leading-none",
                     teamPillClass(row.teamTone),
                   )}
                   initial={{ opacity: 0, filter: "blur(8px)" }}
@@ -240,7 +240,7 @@ function AnimatedRow({
                   exit={{ opacity: 0, filter: "blur(6px)" }}
                   transition={{ duration: 0.25 }}
                 >
-                  <Skeleton className="h-4 w-20 rounded-sm" />
+                  <Skeleton className="h-4 w-20 rounded-none" />
                 </motion.div>
               ) : (
                 <motion.span
@@ -274,7 +274,7 @@ export function DataAnalysisAiTable({
   );
 
   return (
-    <div className="relative overflow-hidden rounded-sm border border-foreground/10">
+    <div className="relative overflow-hidden rounded-none border border-foreground/10">
       <Table className="w-full table-fixed">
         <TableHeader>
           <TableRow className="h-8 min-h-8 max-h-8 border-b border-foreground/10 hover:bg-transparent">

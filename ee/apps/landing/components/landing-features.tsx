@@ -24,7 +24,7 @@ const featureCards = [
     id: "02",
     title: "Data Analysis",
     description:
-      "Work from Excel files or pasted spreadsheets without changing how your team already shares data.",
+      "Work from Excel files or pasted spreadsheets without changing how your team already shares data. ",
   },
   {
     id: "03",
@@ -37,7 +37,7 @@ const featureCards = [
 const ROTATE_INTERVAL_MS = 2600;
 
 function FeatureMediaFrame({ children }: { children: React.ReactNode }) {
-  return <div className="h-full overflow-hidden px-4 pt-4">{children}</div>;
+  return <div className="h-full overflow-hidden px-2 pt-4">{children}</div>;
 }
 
 function FeaturePreview({ id }: { id: string }) {

@@ -14,55 +14,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import type { ComponentPropsWithoutRef } from "react";
 import { useNavHoverIndicator } from "../hooks/use-nav-hover-indicator";
-
-const productItems = [
-  {
-    title: "Intake",
-    href: "/#intake",
-    description: "Make your product operations self-driving",
-  },
-  {
-    title: "Plan",
-    href: "/#plan",
-    description: "Plan and navigate from idea to launch",
-  },
-  {
-    title: "Build",
-    href: "/#build",
-    description: "Move work forward across teams and agents",
-  },
-  {
-    title: "Diffs",
-    href: "/#diffs",
-    description: "Make code review effortless",
-  },
-  {
-    title: "Monitor",
-    href: "/#monitor",
-    description: "Understand progress at scale",
-  },
-  {
-    title: "Integrations",
-    href: "/#integrations",
-    description: "Collaborate across tools",
-  },
-];
-
-const resourceItems = [
-  {
-    title: "Documentation",
-    href: "/docs",
-    description: "Learn how to use OpenWork",
-    external: true,
-  },
-  {
-    title: "GitHub",
-    href: "https://github.com/different-ai/openwork",
-    description: "View source and contribute",
-    external: true,
-  },
-  { title: "Changelog", href: "/changelog", description: "See what's new" },
-];
+import { productItems, resourceItems } from "./site-nav-links";
 
 function ListItem({
   className,

@@ -5,7 +5,9 @@ import { GeistMono } from "geist/font/mono";
 import { Highlight, themes } from "prism-react-renderer";
 import type { Language, RenderProps, Token } from "prism-react-renderer";
 import { useTheme } from "next-themes";
+import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useClipboard } from "@/hooks/use-clipboard";
 
 type LineNumberConfig = boolean | "inside" | "outside";
 
@@ -193,6 +195,13 @@ export const premiumDarkTheme: PrismTheme = {
         color: "#22D3EE",
       },
     },
+
+    {
+      types: ["parameter", "variable", "symbol", "plain"],
+      style: {
+        color: "#E5E7EB",
+      },
+    },
   ],
 };
 
@@ -281,6 +290,13 @@ export const premiumLightTheme: PrismTheme = {
         color: "#0891B2",
       },
     },
+
+    {
+      types: ["parameter", "variable", "symbol", "plain"],
+      style: {
+        color: "#111827",
+      },
+    },
   ],
 };
 
@@ -336,6 +352,7 @@ export function CodeSnippet({
       new Set((highlightedLines ?? []).filter((line) => Number.isFinite(line))),
     [highlightedLines],
   );
+  const { copied, copy } = useClipboard({ resetAfterMs: 1800 });
 
   return (
     <div
@@ -346,6 +363,59 @@ export function CodeSnippet({
       )}
       {...props}
     >
+      <div className="flex justify-end px-2 pt-2">
+        <button
+          type="button"
+          className="z-20 inline-flex size-8 items-center justify-center border border-foreground/10 bg-background/80 text-foreground transition-colors hover:bg-background"
+          onClick={() => copy(effectiveCode)}
+          aria-label={copied ? "Copied" : "Copy code"}
+        >
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.div
+              key={copied ? "check" : "copy"}
+              initial={{ scale: 0, opacity: 0, filter: "blur(4px)" }}
+              animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
+              exit={{ scale: 0, opacity: 0, filter: "blur(4px)" }}
+              transition={{
+                type: "spring",
+                damping: 20,
+                stiffness: 400,
+                mass: 0.5,
+              }}
+            >
+              {copied ? (
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              ) : (
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </button>
+      </div>
+
       {
         Highlight({
           code: effectiveCode || " ",
@@ -362,7 +432,7 @@ export function CodeSnippet({
               className={cn(
                 prismClassName,
                 GeistMono.className,
-                "overflow-hidden bg-transparent p-0 text-[13px] leading-5",
+                "overflow-x-auto overflow-y-hidden bg-transparent p-0 pb-3 text-[13px] leading-5",
                 preClassName,
               )}
               style={{
@@ -373,7 +443,7 @@ export function CodeSnippet({
             >
               <code
                 className={cn(
-                  "grid w-full",
+                  "grid min-w-full w-max",
                   GeistMono.className,
                   codeClassName,
                 )}
@@ -424,7 +494,7 @@ export function CodeSnippet({
                         </span>
                       )}
 
-                      <span className="min-w-0 flex-1 whitespace-pre-wrap break-words">
+                      <span className="whitespace-pre">
                         {line.length === 0
                           ? " "
                           : line.map((token: Token, tokenIndex: number) => {
