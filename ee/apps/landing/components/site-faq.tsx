@@ -136,7 +136,7 @@ export default function SiteFAQ() {
                 <Accordion className={"space-y-[-1]"}>
                   {category.questions.map((item, qIdx) => (
                     <div
-                      className="relative p-2 px-4 bg-transparent border-b-[0.5px] last:border-b-0"
+                      className="relative p-0.5 px-4 bg-transparent border-b-[0.5px] last:border-b-0"
                       key={qIdx}
                     >
                       <>

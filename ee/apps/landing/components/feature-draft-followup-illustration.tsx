@@ -8,7 +8,7 @@ import { TextShimmer } from "./ui/text-shimmer";
 import { Typewriter } from "./ui/typewriter";
 
 const PROMPT_TEXT =
-  "Draft follow-up for Acme Corp. Turn Notion MCP context into personalized outreach, then push the final result into your CRM.";
+  "Analyze the latest account context, draft a follow-up for Acme Corp, and reschedule the next touchpoint. Then sync everything to CRM.";
 
 const PROCESSING_STEP_MS = 1800;
 const PROCESSING_FINAL_HOLD_MS = 1200;

@@ -75,7 +75,6 @@ const footerColumns: Array<{ title: string; links: FooterLink[] }> = [
         href: "https://github.com/different-ai/openwork",
         external: true,
       },
-      { label: "YouTube", href: "https://www.youtube.com", external: true },
     ],
   },
 ];

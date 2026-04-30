@@ -73,7 +73,7 @@ export function LandingHome(props: Props) {
               </p>
 
               {/* CTAs */}
-              <div className="mt-10 flex gap-1 items-center">
+              <div className="mt-10 flex gap-2 items-center">
                 <a href={primaryCtaHref} {...primaryCtaLinkProps}>
                   <Button size="lg" className="w-full sm:w-auto">
                     {primaryCtaLabel}
@@ -81,9 +81,9 @@ export function LandingHome(props: Props) {
                 </a>
                 <a href={props.callHref} {...callLinkProps}>
                   <Button
-                    variant="ghost"
+                    variant="secondary"
                     size="lg"
-                    className="w-full sm:w-auto dark"
+                    className="w-full sm:w-auto"
                   >
                     Contact sales
                   </Button>

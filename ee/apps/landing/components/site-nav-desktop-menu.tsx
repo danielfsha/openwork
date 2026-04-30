@@ -104,19 +104,6 @@ export function SiteNavDesktopMenu() {
                   </ListItem>
                 ))}
               </ul>
-              <div className="mt-2 border-t border-border px-1 pt-2">
-                <Link
-                  href="/changelog"
-                  className="flex items-center justify-between rounded-lg p-3 text-sm transition-colors hover:bg-accent"
-                >
-                  <span className="font-medium">
-                    New: Linear Agent MCP support
-                  </span>
-                  <span className="text-blue-600 hover:text-blue-700">
-                    Changelog
-                  </span>
-                </Link>
-              </div>
             </NavigationMenuContent>
           </NavigationMenuItem>
 

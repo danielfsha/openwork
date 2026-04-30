@@ -18,18 +18,19 @@ import { useFeatureSequence } from "./use-feature-sequence";
 const featureCards = [
   {
     id: "01",
-    title: "Draft follow-up for Acme Corp",
+    title: "Data Analysis",
     description:
-      "Turn Notion MCP context into personalized outreach, then push the final result into your CRM.",
+      "Analyze finance sheets from Excel or pasted ledgers to surface revenue, margin, and cash insights instantly.",
     backgroundImage: "/images/gradient-1.jpg",
   },
   {
     id: "02",
-    title: "Data Analysis",
+    title: "Draft follow-up and reschedule",
     description:
-      "Analyze finance sheets from Excel or pasted ledgers to surface revenue, margin, and cash insights instantly.",
+      "Use data analysis insights to draft a personalized follow-up, then reschedule the next touchpoint automatically.",
     backgroundImage: "/images/gradient-2.jpg",
   },
+
   {
     id: "03",
     title: "Task Scheduling",
@@ -60,7 +61,7 @@ function FeaturePreview({
 }) {
   if (id === "01") {
     return (
-      <DraftFollowupIllustration
+      <DataAnalysisIllustration
         isActive={isActive}
         replayKey={replayKey}
         onSequenceComplete={onSequenceComplete}
@@ -70,7 +71,7 @@ function FeaturePreview({
 
   if (id === "02") {
     return (
-      <DataAnalysisIllustration
+      <DraftFollowupIllustration
         isActive={isActive}
         replayKey={replayKey}
         onSequenceComplete={onSequenceComplete}
@@ -201,7 +202,7 @@ export function LandingFeatures() {
                 showCorners
                 key={card.id}
                 className={cn(
-                  "h-full min-h-[420px] bg-cover bg-center bg-no-repeat md:min-h-[500px]",
+                  "h-full min-h-[440px] bg-cover bg-center bg-no-repeat md:min-h-[500px]",
                 )}
                 style={{ backgroundImage: `url('${card.backgroundImage}')` }}
               >

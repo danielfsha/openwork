@@ -149,9 +149,9 @@ export function SiteNavMobileMenu({
   }
 
   return (
-    <div className="fixed inset-0 z-[30] bg-background md:hidden">
+    <div className="fixed inset-0 z-[30] md:hidden ">
       <div className="mx-auto flex h-dvh w-full max-w-md flex-col px-3 pb-3 pt-[82px]">
-        <div className="flex flex-1 flex-col overflow-hidden rounded-[22px] bg-[#f7f7f8]">
+        <div className="flex flex-1 flex-col overflow-hidden rounded-[22px] bg-[#F5F3F1] shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_0px_rgba(0,0,0,0.04),0_2px_4px_0px_rgba(0,0,0,0.04)]">
           <div className="flex-1 overflow-y-auto p-3">
             <div className="space-y-1 text-[20px] font-medium tracking-tight text-[#111111]">
               {expandableGroups.map((group) => {

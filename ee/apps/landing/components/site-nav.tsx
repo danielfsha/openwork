@@ -74,7 +74,7 @@ export function SiteNav(props: Props) {
     <>
       <header
         className={cn(
-          "sticky top-0 z-40 w-screen transition-transform duration-150 ease-out will-change-transform",
+          "sticky top-0 z-40 w-screen transition-transform duration-150 ease-out will-change-transform bg-background",
           navVisible ? "translate-y-0" : "-translate-y-full",
         )}
       >

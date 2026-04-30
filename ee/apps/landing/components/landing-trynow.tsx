@@ -127,7 +127,7 @@ export function LandingTryNow() {
 
   return (
     <SectionWrapper position="middle">
-      <section className="px-2 py-16 md:py-24 lg:py-32">
+      <section className="px-2 py-20 md:py-24 lg:py-40">
         <div className="mx-auto flex max-w-3xl flex-col gap-8 text-center">
           <div className="space-y-3">
             <div className="flex flex-col gap-3 p-1 text-4xl font-normal leading-[1.12] tracking-tight text-foreground sm:text-4xl md:text-5xl">

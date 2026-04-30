@@ -73,7 +73,7 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          inter.variable,
+          inter.className,
           "bg-background overflow-x-hidden antialiased space-y-[-1px]",
         )}
         suppressHydrationWarning
