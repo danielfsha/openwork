@@ -174,14 +174,12 @@ export function LandingFeatures() {
             isActive={activeCardIndex === 0}
           />
           <span className="text-foreground"> from live workspace context,</span>
-          <br className="block h-1" />
           <HighlightChip
             label="analyzes data"
             id="02"
             isActive={activeCardIndex === 1}
           />
           <span> to surface actionable insights, and</span>
-          <br className="block h-1" />
           <HighlightChip
             label="schedules tasks"
             id="03"
