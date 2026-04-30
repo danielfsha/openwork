@@ -41,7 +41,7 @@ export const Tabs: React.FC<{
       ref={containerRef}
       className="relative flex items-center gap-1 rounded-full border bg-[#f2f6fb]/[.4] p-1"
     >
-      {MAIN_STEPS.map((tab, index) => (
+      {MAIN_STEPS.map((tab) => (
         <button
           key={tab.id}
           ref={(el) => {

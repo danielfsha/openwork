@@ -4,9 +4,11 @@ export const metadata = {
   title: "OpenWork — Terms of Use",
   description: "Terms of use for Different AI, doing business as OpenWork.",
   alternates: {
-    canonical: "/terms"
-  }
+    canonical: "/terms",
+  },
 };
+
+export const dynamic = "force-dynamic";
 
 export default function TermsPage() {
   return <LegalPage file="terms/terms-of-use.md" />;

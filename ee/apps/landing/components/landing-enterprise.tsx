@@ -1,6 +1,6 @@
 "use client";
 
-import { Cloud, Monitor, PlugZap, ShieldCheck, Users } from "lucide-react";
+import { Cloud, Monitor, PlugZap, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { BookCallForm } from "./book-call-form";
 import { LandingAppDemoPanel } from "./landing-app-demo-panel";

@@ -48,7 +48,7 @@ export const ThemeSwitcher: React.FC = () => {
       ref={containerRef}
       className="relative flex items-center overflow-hidden rounded-full border bg-card"
     >
-      {MAIN_STEPS.map((tab, index) => (
+      {MAIN_STEPS.map((tab) => (
         <button
           key={tab.id}
           ref={(el) => {

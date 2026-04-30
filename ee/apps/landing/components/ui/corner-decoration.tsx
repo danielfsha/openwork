@@ -2,36 +2,37 @@ import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const cornerDecorationVariants = cva(
-  "absolute pointer-events-none",
-  {
-    variants: {
-      variant: {
-        default: "text-border",
-        secondary: "text-border",
-        muted: "text-border",
-        accent: "text-border",
-      },
-      position: {
-        "top-left": "top-0 left-0 -rotate-90",
-        "top-right": "top-0 right-0 rotate-0",
-        "bottom-right": "bottom-0 right-0 rotate-90",
-        "bottom-left": "bottom-0 left-0 rotate-180",
-      },
+const cornerDecorationVariants = cva("absolute pointer-events-none", {
+  variants: {
+    variant: {
+      default: "text-border",
+      secondary: "text-border",
+      muted: "text-border",
+      accent: "text-border",
     },
-    defaultVariants: {
-      variant: "default",
-      position: "top-left",
+    position: {
+      "top-left": "top-0 left-0 -rotate-90",
+      "top-right": "top-0 right-0 rotate-0",
+      "bottom-right": "bottom-0 right-0 rotate-90",
+      "bottom-left": "bottom-0 left-0 rotate-180",
     },
-  }
-);
+  },
+  defaultVariants: {
+    variant: "default",
+    position: "top-left",
+  },
+});
 
-interface CornerDecorationProps extends VariantProps<typeof cornerDecorationVariants> {
+interface CornerDecorationProps extends VariantProps<
+  typeof cornerDecorationVariants
+> {
   size?: number;
   color?: string;
   className?: string;
   offset?: number;
 }
+
+type CornerPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
 export const CornerDecoration: React.FC<CornerDecorationProps> = ({
   position = "top-left",
@@ -69,9 +70,11 @@ export const CornerDecoration: React.FC<CornerDecorationProps> = ({
   );
 };
 
-interface DecoratedBoxProps extends VariantProps<typeof cornerDecorationVariants> {
+interface DecoratedBoxProps extends VariantProps<
+  typeof cornerDecorationVariants
+> {
   children: React.ReactNode;
-  corners?: ("top-left" | "top-right" | "bottom-left" | "bottom-right")[];
+  corners?: CornerPosition[];
   cornerSize?: number;
   cornerColor?: string;
   className?: string;
@@ -92,7 +95,7 @@ export const DecoratedBox: React.FC<DecoratedBoxProps> = ({
       {corners.map((corner) => (
         <CornerDecoration
           key={corner}
-          position={corner as any}
+          position={corner}
           variant={variant}
           size={cornerSize}
           color={cornerColor}

@@ -16,12 +16,13 @@ type Repo = {
 };
 
 const FALLBACK_RELEASE = "https://github.com/different-ai/openwork/releases";
+const GITHUB_FETCH_TIMEOUT_MS = 8_000;
 
 const formatCompact = (value: number) => {
   try {
     return new Intl.NumberFormat("en", {
       notation: "compact",
-      maximumFractionDigits: 1
+      maximumFractionDigits: 1,
     }).format(value);
   } catch {
     return String(value);
@@ -31,7 +32,7 @@ const formatCompact = (value: number) => {
 const selectAsset = (
   assets: ReleaseAsset[],
   extensions: string[],
-  keywords: string[] = []
+  keywords: string[] = [],
 ) => {
   const matches = assets.filter((asset) => {
     if (!asset?.name || !asset?.browser_download_url) return false;
@@ -52,19 +53,25 @@ const selectAsset = (
   );
 };
 
-const fetchJson = async <T,>(url: string): Promise<T | null> => {
+const fetchJson = async <T>(url: string): Promise<T | null> => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), GITHUB_FETCH_TIMEOUT_MS);
+
   try {
     const response = await fetch(url, {
       headers: {
-        Accept: "application/vnd.github+json"
+        Accept: "application/vnd.github+json",
       },
-      next: { revalidate: 60 * 60 }
+      next: { revalidate: 60 * 60 },
+      signal: controller.signal,
     });
 
     if (!response.ok) return null;
     return (await response.json()) as T;
   } catch {
     return null;
+  } finally {
+    clearTimeout(timeout);
   }
 };
 
@@ -72,8 +79,8 @@ export const getGithubData = async () => {
   const [repo, releases] = await Promise.all([
     fetchJson<Repo>("https://api.github.com/repos/different-ai/openwork"),
     fetchJson<Release[]>(
-      "https://api.github.com/repos/different-ai/openwork/releases?per_page=50"
-    )
+      "https://api.github.com/repos/different-ai/openwork/releases?per_page=50",
+    ),
   ]);
 
   const stars =
@@ -90,7 +97,10 @@ export const getGithubData = async () => {
     const assets = Array.isArray(release?.assets) ? release.assets : [];
     return assets.some((asset) => {
       const name = String(asset?.name || "").toLowerCase();
-      return name.startsWith("openwork-desktop-windows-") && (name.endsWith(".msi") || name.endsWith(".exe"));
+      return (
+        name.startsWith("openwork-desktop-windows-") &&
+        (name.endsWith(".msi") || name.endsWith(".exe"))
+      );
     });
   };
 
@@ -110,12 +120,19 @@ export const getGithubData = async () => {
     releaseList.find((release) => !release?.draft && hasDownloadAsset(release));
 
   const windowsPick =
-    releaseList.find((release) => isStableDesktopRelease(release) && hasWindowsDesktopAsset(release)) ||
-    releaseList.find((release) => !release?.draft && hasWindowsDesktopAsset(release));
+    releaseList.find(
+      (release) =>
+        isStableDesktopRelease(release) && hasWindowsDesktopAsset(release),
+    ) ||
+    releaseList.find(
+      (release) => !release?.draft && hasWindowsDesktopAsset(release),
+    );
 
   const assets = Array.isArray(pick?.assets) ? pick.assets : [];
   const releaseUrl = pick?.html_url || FALLBACK_RELEASE;
-  const windowsAssets = Array.isArray(windowsPick?.assets) ? windowsPick.assets : assets;
+  const windowsAssets = Array.isArray(windowsPick?.assets)
+    ? windowsPick.assets
+    : assets;
   const windowsReleaseUrl = windowsPick?.html_url || releaseUrl;
   const dmg = selectAsset(assets, [".dmg"]);
   const exe = selectAsset(windowsAssets, [".exe", ".msi"], ["win", "windows"]);
@@ -126,10 +143,26 @@ export const getGithubData = async () => {
   const windowsX64 =
     selectAsset(windowsAssets, [".msi", ".exe"], ["windows-x64"]) || exe;
 
-  const linuxDebX64 = selectAsset(assets, [".deb"], ["linux-amd64", "linux-x64"]);
-  const linuxDebArm64 = selectAsset(assets, [".deb"], ["linux-arm64", "linux-aarch64"]);
-  const linuxRpmX64 = selectAsset(assets, [".rpm"], ["linux-x86_64", "linux-amd64"]);
-  const linuxRpmArm64 = selectAsset(assets, [".rpm"], ["linux-aarch64", "linux-arm64"]);
+  const linuxDebX64 = selectAsset(
+    assets,
+    [".deb"],
+    ["linux-amd64", "linux-x64"],
+  );
+  const linuxDebArm64 = selectAsset(
+    assets,
+    [".deb"],
+    ["linux-arm64", "linux-aarch64"],
+  );
+  const linuxRpmX64 = selectAsset(
+    assets,
+    [".rpm"],
+    ["linux-x86_64", "linux-amd64"],
+  );
+  const linuxRpmArm64 = selectAsset(
+    assets,
+    [".rpm"],
+    ["linux-aarch64", "linux-arm64"],
+  );
 
   return {
     stars,
@@ -142,15 +175,21 @@ export const getGithubData = async () => {
         appImage?.browser_download_url ||
         linuxDebX64?.browser_download_url ||
         linuxRpmX64?.browser_download_url ||
-        FALLBACK_RELEASE
+        FALLBACK_RELEASE,
     },
     installers: {
       macos: {
-        appleSilicon: macosApple?.browser_download_url || dmg?.browser_download_url || releaseUrl,
-        intel: macosIntel?.browser_download_url || dmg?.browser_download_url || releaseUrl
+        appleSilicon:
+          macosApple?.browser_download_url ||
+          dmg?.browser_download_url ||
+          releaseUrl,
+        intel:
+          macosIntel?.browser_download_url ||
+          dmg?.browser_download_url ||
+          releaseUrl,
       },
       windows: {
-        x64: windowsX64?.browser_download_url || windowsReleaseUrl
+        x64: windowsX64?.browser_download_url || windowsReleaseUrl,
       },
       linux: {
         aur: "https://aur.archlinux.org/packages/openwork",
@@ -158,8 +197,8 @@ export const getGithubData = async () => {
         debArm64: linuxDebArm64?.browser_download_url || releaseUrl,
         rpmX64: linuxRpmX64?.browser_download_url || releaseUrl,
         rpmArm64: linuxRpmArm64?.browser_download_url || releaseUrl,
-        appImage: appImage?.browser_download_url || releaseUrl
-      }
-    }
+        appImage: appImage?.browser_download_url || releaseUrl,
+      },
+    },
   };
 };

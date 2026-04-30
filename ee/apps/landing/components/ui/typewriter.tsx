@@ -40,7 +40,6 @@ export function Typewriter({
 
   useEffect(() => {
     let typingInterval: ReturnType<typeof setInterval> | undefined;
-    let startTimeout: ReturnType<typeof setTimeout> | undefined;
     let loopTimeout: ReturnType<typeof setTimeout> | undefined;
 
     setLength(0);
@@ -72,7 +71,7 @@ export function Typewriter({
       }, speedMs);
     };
 
-    startTimeout = setTimeout(startTyping, startDelayMs);
+    const startTimeout = setTimeout(startTyping, startDelayMs);
 
     return () => {
       if (typingInterval) {

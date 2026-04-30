@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { GeistMono } from "geist/font/mono";
-import { Highlight, themes } from "prism-react-renderer";
+import { Highlight } from "prism-react-renderer";
 import type { Language, RenderProps, Token } from "prism-react-renderer";
 import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "framer-motion";
